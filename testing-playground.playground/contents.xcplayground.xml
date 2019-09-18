@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<playground version='6.0' target-platform='macos'>
+    <pages>
+        <page name='foundation'/>
+        <page name='scene'/>
+        <page name='smorgasbord-playground'/>
+        <page name='physics'/>
+        <page name='portal-animation'/>
+    </pages>
+</playground>
