@@ -15,7 +15,7 @@ let package = Package(
             targets: ["RollswhereEngine"]),
     ],
     dependencies: [
-        .package(path: "https://github.com/markorankovic/Smorgasbord")
+        .package(url: "https://github.com/markorankovic/Smorgasbord", from: "1.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
