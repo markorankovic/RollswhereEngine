@@ -7,7 +7,7 @@ protocol GameComponentCollectionProtocol {
         get
     }
     
-    var draggables: [Draggable] {
+    var draggables: [DragComponent] {
         get
     }
     

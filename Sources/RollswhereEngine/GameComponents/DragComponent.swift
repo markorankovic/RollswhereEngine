@@ -2,7 +2,7 @@ import SpriteKit
 import GameplayKit
 import Smorgasbord
 
-open class Draggable: GameComponent {
+open class DragComponent: GameComponent {
         
     var active = false
     

@@ -19,11 +19,11 @@ open class Game: GameComponentCollectionProtocol {
         return currentScene.entities.filter{ !$0.components.filter{ $0 is Shootable }.isEmpty }.map{ $0.components.filter{ $0 is Shootable }.first as! Shootable }
     }
     
-    public var draggables: [Draggable] {
+    public var draggables: [DragComponent] {
         guard let currentScene = currentScene else {
             return []
         }
-        return currentScene.entities.filter{ !$0.components.filter{ $0 is Draggable }.isEmpty }.map{ $0.components.filter{ $0 is Draggable }.first as! Draggable }
+        return currentScene.entities.filter{ !$0.components.filter{ $0 is DragComponent }.isEmpty }.map{ $0.components.filter{ $0 is DragComponent }.first as! DragComponent }
     }
     
     public var starts: [StartComponent] {
@@ -66,7 +66,9 @@ open class Game: GameComponentCollectionProtocol {
     open func runLevel(_ level: GKScene) {
         currentScene = level
         stateMachine?.enter(EnterLevelState.self)
-        view?.presentScene(level.rootNode as? GameScene)
+        let scene = level.rootNode as? GameScene
+        view?.presentScene(scene)
+        print(scene)
     }
     
 }

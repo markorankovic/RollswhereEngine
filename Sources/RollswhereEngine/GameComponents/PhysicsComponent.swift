@@ -3,6 +3,11 @@ import GameplayKit
 
 open class PhysicsComponent: GameComponent {
     
+    public required init?(coder: NSCoder) {
+        super.init()
+        print(1)
+    }
+    
     var physicsBody: SKPhysicsBody? {
         return entity?.component(ofType: GKSKNodeComponent.self)?.node.physicsBody
     }
