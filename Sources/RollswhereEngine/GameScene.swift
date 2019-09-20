@@ -23,6 +23,7 @@ open class GameScene: SKScene {
     
     override public func keyDown(with event: NSEvent) {
         state?.keyDown(event: event)
+        print(state)
     }
     
     override public func keyUp(with event: NSEvent) {

@@ -31,21 +31,18 @@ open class Shootable: GameComponent {
         setPower(power + by)
     }
     
-    func shoot() {
-        guard let scene = entityNodeComponent?.node.scene as? GameScene else {
-            return
-        }
+    func shoot(_ stateMachine: GKStateMachine?) {
         entityPhysicsComponent?.setVelocity(.init(dx: power, dy: 0))
         entityPhysicsComponent?.toggleGravity(on: true)
         setPower(0)
-        scene.state?.stateMachine?.enter(MovingState.self)
+        stateMachine?.enter(MovingState.self)
     }
     
-    func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
-        evaluate(gestureRecognizer)
+    func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer, _ stateMachine: GKStateMachine?) {
+        evaluate(gestureRecognizer, stateMachine)
     }
     
-    func evaluate(_ gestureRecognizer: NSPanGestureRecognizer) {
+    func evaluate(_ gestureRecognizer: NSPanGestureRecognizer, _ stateMachine: GKStateMachine?) {
         guard let scene = entityNodeComponent?.node.scene as? GameScene else {
             return
         }
@@ -65,7 +62,7 @@ open class Shootable: GameComponent {
         case .ended:
             deactivate()
             if power > 50 {
-                shoot()
+                shoot(stateMachine) 
                 return
             }
             break

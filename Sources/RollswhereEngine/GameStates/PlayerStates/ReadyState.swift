@@ -20,7 +20,7 @@ class ReadyState: GameState {
     override func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
         
         for shootable in game?.shootables ?? [] {
-            shootable.panGestureHandler(gestureRecognizer)
+            shootable.panGestureHandler(gestureRecognizer, stateMachine)
         }
         
         for draggable in game?.draggables ?? [] {

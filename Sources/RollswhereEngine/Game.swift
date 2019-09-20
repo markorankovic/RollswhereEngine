@@ -5,10 +5,8 @@ open class Game: GameComponentCollectionProtocol {
     
     public init() {
         stateMachine = GKStateMachine(states: [
-            EnterLevelState(game: self),
-            RetryState(game: self),
-            ReadyState(game: self),
-            MovingState(game: self)
+            MainMenuState(game: self),
+            PlayingState(game: self)
         ])
     }
     
@@ -48,7 +46,14 @@ open class Game: GameComponentCollectionProtocol {
     }
     
     public var stateMachine: GKStateMachine?
-        
+     
+    public var players: [PlayerComponent] {
+        guard let currentScene = currentScene else {
+            return []
+        }
+        return currentScene.entities.filter{ !$0.components.filter{ $0 is PlayerComponent }.isEmpty }.map{ $0.components.filter{ $0 is PlayerComponent }.first as! PlayerComponent }
+    }
+    
     public weak var view: Presenter?
     
     public var currentScene: GKScene?
@@ -69,10 +74,30 @@ open class Game: GameComponentCollectionProtocol {
         }
     }
     
+    func startPlayers() {
+        for player in players {
+            player.stateMachine?.enter(EnterLevelState.self)
+        }
+    }
+    
+    func initPlayers() {
+        for player in players {
+
+            player.stateMachine = GKStateMachine(states: [
+                EnterLevelState(game: self),
+                RetryState(game: self),
+                ReadyState(game: self),
+                MovingState(game: self)
+            ])
+            
+        }
+    }
+    
     open func runLevel(_ level: GKScene) {
         currentScene = level
-        stateMachine?.enter(EnterLevelState.self)
         let scene = level.rootNode as? GameScene
+        initPlayers()
+        stateMachine?.enter(PlayingState.self)
         view?.presentScene(scene)
     }
     
