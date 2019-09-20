@@ -57,9 +57,15 @@ open class Game: GameComponentCollectionProtocol {
         currentScene?.rootNode as? GameScene
     }
     
+    var i = 0
+
     func returnShootables() {
         for shootable in shootables {
-            shootable.entityNodeComponent?.node.position = .init(x: -370, y: 160)
+            guard let pos = starts[i % starts.count].entityNodeComponent?.node.position else {
+                continue
+            }
+            shootable.entityNodeComponent?.node.position = pos
+            i += 1
         }
     }
     
@@ -68,7 +74,6 @@ open class Game: GameComponentCollectionProtocol {
         stateMachine?.enter(EnterLevelState.self)
         let scene = level.rootNode as? GameScene
         view?.presentScene(scene)
-        print(scene)
     }
     
 }

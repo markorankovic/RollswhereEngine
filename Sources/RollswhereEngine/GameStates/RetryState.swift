@@ -35,8 +35,8 @@ class RetryState: GameState {
                 if !physicsbody.isResting {
                     return
                 }
-                self.stateMachine?.enter(ReadyState.self)
             }
+            self.stateMachine?.enter(ReadyState.self)
         }
     }
 
