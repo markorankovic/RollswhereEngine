@@ -1,6 +1,3 @@
-import SpriteKit
-import GameplayKit
-
 protocol GameComponentCollectionProtocol {
     
     var shootables: [Shootable] {

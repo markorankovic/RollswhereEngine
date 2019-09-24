@@ -24,9 +24,7 @@ public class GameView: SKView {
     }
     
     @IBAction func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
-        //DispatchQueue.main.async {
-            self.game?.currentGameScene?.panGestureHandler(gestureRecognizer)
-        //}
+        self.game?.currentGameScene?.panGestureHandler(gestureRecognizer)
     }
     
     public func connectToGame(_ game: Game) {

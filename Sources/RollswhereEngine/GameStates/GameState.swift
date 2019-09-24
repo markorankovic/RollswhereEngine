@@ -2,16 +2,13 @@ import SpriteKit
 import GameplayKit
 
 class GameState: GKState {
-    
-    var game: Game?
-    
+        
     var scene: GameScene? {
-        game?.currentGameScene
+        return game?.currentGameScene
     }
     
-    convenience init(game: Game) {
-        self.init()
-        self.game = game
+    var game: Game? {
+        return (stateMachine as? GameStateMachine)?.game
     }
     
     func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) { }

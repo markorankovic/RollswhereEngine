@@ -4,9 +4,9 @@ import GameplayKit
 open class Game: GameComponentCollectionProtocol {
     
     public init() {
-        stateMachine = GKStateMachine(states: [
-            MainMenuState(game: self),
-            PlayingState(game: self)
+        stateMachine = GameStateMachine(game: self, states: [
+            MainMenuState(),
+            PlayingState()
         ])
     }
     
@@ -45,15 +45,8 @@ open class Game: GameComponentCollectionProtocol {
         return currentScene.entities.filter{ !$0.components.filter{ $0 is RotateComponent }.isEmpty }.map{ $0.components.filter{ $0 is RotateComponent }.first as! RotateComponent }
     }
     
-    public var stateMachine: GKStateMachine?
-     
-    public var players: [PlayerComponent] {
-        guard let currentScene = currentScene else {
-            return []
-        }
-        return currentScene.entities.filter{ !$0.components.filter{ $0 is PlayerComponent }.isEmpty }.map{ $0.components.filter{ $0 is PlayerComponent }.first as! PlayerComponent }
-    }
-    
+    public var stateMachine: GameStateMachine?
+         
     public weak var view: Presenter?
     
     public var currentScene: GKScene?
@@ -73,30 +66,23 @@ open class Game: GameComponentCollectionProtocol {
             i += 1
         }
     }
-    
-    func startPlayers() {
-        for player in players {
-            player.stateMachine?.enter(EnterLevelState.self)
-        }
-    }
-    
-    func initPlayers() {
-        for player in players {
-
-            player.stateMachine = GKStateMachine(states: [
-                EnterLevelState(game: self),
-                RetryState(game: self),
-                ReadyState(game: self),
-                MovingState(game: self)
-            ])
             
-        }
-    }
+    var players: [Player] = []
     
     open func runLevel(_ level: GKScene) {
+                
+        for entity in level.entities {
+            if (entity.component(ofType: GKSKNodeComponent.self)?.node as? PlayerNode) != nil {
+                let player = Player(game: self)
+                for comp in entity.components {
+                    player.addComponent(comp)
+                }
+                players.append(player)
+            }
+        }
+        
         currentScene = level
         let scene = level.rootNode as? GameScene
-        initPlayers()
         stateMachine?.enter(PlayingState.self)
         view?.presentScene(scene)
     }

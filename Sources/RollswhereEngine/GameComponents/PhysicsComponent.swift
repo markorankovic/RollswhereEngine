@@ -5,7 +5,6 @@ open class PhysicsComponent: GameComponent {
     
     public required init?(coder: NSCoder) {
         super.init()
-        print(1)
     }
     
     var physicsBody: SKPhysicsBody? {

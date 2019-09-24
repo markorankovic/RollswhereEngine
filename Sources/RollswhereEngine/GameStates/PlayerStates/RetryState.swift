@@ -23,10 +23,10 @@ class RetryState: GameState {
     }
         
     override func update(deltaTime seconds: TimeInterval) {
-                        
-        guard let game = game else {
+        guard let game = (stateMachine as? GameStateMachine)?.game else {
             return
         }
+        
         DispatchQueue.main.async {
             for shootable in game.shootables {
                 guard let physicsbody = shootable.entityPhysicsComponent?.physicsBody else {
@@ -38,6 +38,7 @@ class RetryState: GameState {
             }
             self.stateMachine?.enter(ReadyState.self)
         }
+        
     }
 
 }

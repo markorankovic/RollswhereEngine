@@ -23,7 +23,6 @@ open class GameScene: SKScene {
     
     override public func keyDown(with event: NSEvent) {
         state?.keyDown(event: event)
-        print(state)
     }
     
     override public func keyUp(with event: NSEvent) {
@@ -31,12 +30,11 @@ open class GameScene: SKScene {
     }
     
     func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
-        //print("Pan loc: \(gestureRecognizer.location(in: view))")
         state?.panGestureHandler(gestureRecognizer)
     }
     
     override public func update(_ currentTime: TimeInterval) {
-        game?.stateMachine?.update(deltaTime: currentTime)
+        state?.update(deltaTime: currentTime)
     }
     
 }

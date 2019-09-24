@@ -24,9 +24,7 @@ class MovingState: GameState {
         }
     }
     
-    override func keyDown(event: NSEvent) {
-        print(5)
-        
+    override func keyDown(event: NSEvent) {        
         switch event.keyCode {
         case 15:
             resetVelocities()

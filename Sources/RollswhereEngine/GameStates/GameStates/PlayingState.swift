@@ -3,7 +3,15 @@ import GameplayKit
 class PlayingState: GameState {
     
     override func didEnter(from previousState: GKState?) {
-        game?.startPlayers()
+        
+        guard let players = game?.players else {
+            return
+        }
+        
+        for player in players {
+            player.stateMachine?.enter(EnterLevelState.self)
+        }
+        
     }
     
     override func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
@@ -19,11 +27,11 @@ class PlayingState: GameState {
     }
         
     override func keyDown(event: NSEvent) {
-print(5)
+        
         guard let players = game?.players else {
             return
         }
-
+        
         for player in players {
             (player.stateMachine?.currentState as? GameState)?.keyDown(event: event)
         }
@@ -31,13 +39,13 @@ print(5)
     }
 
     override func update(deltaTime seconds: TimeInterval) {
-
+        
         guard let players = game?.players else {
             return
         }
         
         for player in players {
-            player.stateMachine?.update(deltaTime: seconds)
+            (player.stateMachine?.currentState as? GameState)?.update(deltaTime: seconds)
         }
         
     }
