@@ -3,7 +3,7 @@ import GameplayKit
 import Smorgasbord
 
 open class DragComponent: GameComponent {
-        
+            
     var active = false
     
     func activate() {

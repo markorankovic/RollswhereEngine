@@ -4,7 +4,7 @@ import GameplayKit
 open class Game: GameComponentCollectionProtocol {
     
     public init() {
-        stateMachine = GameStateMachine(game: self, states: [
+        stateMachine = GameStateMachine(game: self, player: nil, states: [
             MainMenuState(),
             PlayingState()
         ])
@@ -54,19 +54,7 @@ open class Game: GameComponentCollectionProtocol {
     public var currentGameScene: GameScene? {
         currentScene?.rootNode as? GameScene
     }
-    
-    var i = 0
-
-    func returnShootables() {
-        for shootable in shootables {
-            guard let pos = starts[i % starts.count].entityNodeComponent?.node.position else {
-                continue
-            }
-            shootable.entityNodeComponent?.node.position = pos
-            i += 1
-        }
-    }
-            
+                
     var players: [Player] = []
     
     open func runLevel(_ level: GKScene) {
@@ -80,11 +68,28 @@ open class Game: GameComponentCollectionProtocol {
                 players.append(player)
             }
         }
-        
         currentScene = level
         let scene = level.rootNode as? GameScene
+        assignStarts()
+        assignDraggables()
         stateMachine?.enter(PlayingState.self)
         view?.presentScene(scene)
+    }
+    
+    func assignStarts() {
+        var i = 0
+        for start in starts {
+            start.player = players[i % players.count]
+            i += 1
+        }
+    }
+    
+    func assignDraggables() {
+        var i = 0
+        for draggable in draggables {
+            draggable.player = players[i % players.count]
+            i += 1
+        }
     }
     
 }

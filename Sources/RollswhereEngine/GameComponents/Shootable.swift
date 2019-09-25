@@ -7,6 +7,13 @@ open class Shootable: GameComponent {
     
     var clickedLocation: CGPoint?
     
+    override var player: Player? {
+        set{}
+        get {
+            return entity as? Player
+        }
+    }
+    
     var entityPhysicsComponent: PhysicsComponent? {
         return entity?.components.filter{ $0 is PhysicsComponent }.first as? PhysicsComponent
     }
