@@ -8,6 +8,10 @@ protocol GameComponentCollectionProtocol {
         get
     }
     
+    var rotations: [RotateComponent] {
+        get
+    }
+    
     var starts: [StartComponent] {
         get
     }

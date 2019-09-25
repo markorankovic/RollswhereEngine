@@ -25,6 +25,13 @@ public class Player: GKEntity, GameComponentCollectionProtocol {
         return game.draggables.filter{ $0.player == self }
     }
     
+    var rotations: [RotateComponent] {
+        guard let game = game else {
+            return []
+        }
+        return game.rotations.filter{ $0.player == self }
+    }
+    
     var starts: [StartComponent] {
         guard let game = game else {
             return []
@@ -80,10 +87,23 @@ public class Player: GKEntity, GameComponentCollectionProtocol {
             draggable.panGestureHandler(gestureRecognizer)
         }
 
-//        for rotation in game?.rotations ?? [] {
-//            rotation.panGestureHandler(gestureRecognizer)
-//        }
+        for rotation in rotations {
+            rotation.panGestureHandler(gestureRecognizer)
+        }
         
+    }
+    
+    func keyDown(_ event: NSEvent) {
+         for rotation in rotations {
+             rotation.keyDown(event: event)
+         }
+    }
+    
+    func keyUp(_ event: NSEvent) {
+        for rotation in rotations {
+            rotation.keyUp(event: event)
+        }
+        print("key up")
     }
     
     func resetVelocities() {
@@ -110,9 +130,12 @@ public class Player: GKEntity, GameComponentCollectionProtocol {
     }
     
     func returnShootables() {
+        guard starts.count > 0 else {
+            return
+        }
         var i = 0
         for shootable in shootables {
-            guard let returnPos = starts[i % starts.count].entityNodeComponent?.node.position else {
+            guard let returnPos = starts[i % (starts.count)].entityNodeComponent?.node.position else {
                 return
             }
             shootable.entityNodeComponent?.node.position = returnPos

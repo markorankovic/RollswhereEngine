@@ -37,6 +37,18 @@ class PlayingState: GameState {
         }
 
     }
+    
+    override func keyUp(event: NSEvent) {
+        
+        guard let players = game?.players else {
+            return
+        }
+        
+        for player in players {
+            (player.stateMachine?.currentState as? GameState)?.keyUp(event: event)
+        }
+
+    }
 
     override func update(deltaTime seconds: TimeInterval) {
         

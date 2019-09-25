@@ -27,6 +27,7 @@ open class GameScene: SKScene {
     
     override public func keyUp(with event: NSEvent) {
         state?.keyUp(event: event)
+        print("key released")
     }
     
     func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {

@@ -55,23 +55,32 @@ open class Game: GameComponentCollectionProtocol {
         currentScene?.rootNode as? GameScene
     }
                 
-    var players: [Player] = []
+    var players: [Player] {
+        guard let level = currentScene else {
+            return []
+        }
+        return level.entities.filter{ $0 is Player }.map{ $0 as! Player }
+    }
     
-    open func runLevel(_ level: GKScene) {
-                
+    func replaceGKEntitiesAsPlayers(level: GKScene) {
         for entity in level.entities {
             if (entity.component(ofType: GKSKNodeComponent.self)?.node as? PlayerNode) != nil {
                 let player = Player(game: self)
                 for comp in entity.components {
                     player.addComponent(comp)
                 }
-                players.append(player)
+                level.removeEntity(entity)
+                level.addEntity(player)
             }
         }
+    }
+    
+    open func runLevel(_ level: GKScene) {
+        replaceGKEntitiesAsPlayers(level: level)
         currentScene = level
         let scene = level.rootNode as? GameScene
         assignStarts()
-        assignDraggables()
+        assignDraggablesAndRotations()
         stateMachine?.enter(PlayingState.self)
         view?.presentScene(scene)
     }
@@ -84,11 +93,12 @@ open class Game: GameComponentCollectionProtocol {
         }
     }
     
-    func assignDraggables() {
-        var i = 0
-        for draggable in draggables {
-            draggable.player = players[i % players.count]
-            i += 1
+    func assignDraggablesAndRotations() {
+        let ma = max(draggables.count, rotations.count)
+        let mi = min(draggables.count, rotations.count)
+        for i in 0..<ma {
+            draggables[i % mi].player = players[i % players.count]
+            rotations[i % mi].player = players[i % players.count]
         }
     }
     

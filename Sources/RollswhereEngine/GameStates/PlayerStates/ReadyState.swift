@@ -13,21 +13,12 @@ class ReadyState: GameState {
     }
 
     override func keyDown(event: NSEvent) {
-        
-        //(stateMachine as? GameStateMachine)?.player.keyDown(event, stateMachine)
-
-        //for rotation in game?.rotations ?? [] {
-       //     rotation.keyDown(event: event)
-        //}
-        
+        (stateMachine as? GameStateMachine)?.player?.keyDown(event)
     }
     
     override func keyUp(event: NSEvent) {
-       // (stateMachine as? GameStateMachine)?.player.keyUp(event, stateMachine)
-       // for rotation in game?.rotations ?? [] {
-      //      rotation.keyUp(event: event)
-      //  }
-                
+        (stateMachine as? GameStateMachine)?.player?.keyUp(event)
+        print("key is up")
     }
     
 }

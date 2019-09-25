@@ -55,6 +55,7 @@ open class RotateComponent: GameComponent {
             return
         case .ended:
             deactivate()
+            print(arc4random())
             rKeyDown = false
             rotating = false
             return
@@ -71,18 +72,16 @@ open class RotateComponent: GameComponent {
     }
     
     func keyDown(event: NSEvent) {
-        
         if event.keyCode == 15 {
             rKeyDown = true
         }
-        
     }
         
     func keyUp(event: NSEvent) {
         if event.keyCode == 15 {
             rKeyDown = false
+            print("r key not down")
         }
-        
     }
     
 }
