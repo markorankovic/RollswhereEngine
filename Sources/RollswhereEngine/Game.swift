@@ -1,7 +1,19 @@
 import SpriteKit
 import GameplayKit
 
-open class Game: GameComponentCollectionProtocol {
+extension Sequence {
+    func first<T>(_: T.Type) -> T? {
+        return first{ $0 is T } as? T
+    }
+}
+
+extension GKScene {
+    func each<T: GKComponent>(_: T.Type) -> [T] {
+        return entities.compactMap{ $0.components.first(T.self) }
+    }
+}
+
+open class Game {
         
     public init() {
         stateMachine = GKStateMachine(states: [
@@ -10,41 +22,10 @@ open class Game: GameComponentCollectionProtocol {
         ])
     }
     
-    public var shootables: [Shootable] {
-        guard let currentScene = currentScene else {
-            return []
-        }
-        return currentScene.entities.filter{ !$0.components.filter{ $0 is Shootable }.isEmpty }.map{ $0.components.filter{ $0 is Shootable }.first as! Shootable }
+    public func each<Component: GKComponent>(_: Component.Type) -> [Component] {
+        return currentScene?.each(Component.self) ?? []
     }
-    
-    public var draggables: [DragComponent] {
-        guard let currentScene = currentScene else {
-            return []
-        }
-        return currentScene.entities.filter{ !$0.components.filter{ $0 is DragComponent }.isEmpty }.map{ $0.components.filter{ $0 is DragComponent }.first as! DragComponent }
-    }
-    
-    public var starts: [StartComponent] {
-        guard let currentScene = currentScene else {
-            return []
-        }
-        return currentScene.entities.filter{ !$0.components.filter{ $0 is StartComponent }.isEmpty }.map{ $0.components.filter{ $0 is StartComponent }.first as! StartComponent }
-    }
-    
-    public var finishes: [FinishComponent] {
-        guard let currentScene = currentScene else {
-            return []
-        }
-        return currentScene.entities.filter{ !$0.components.filter{ $0 is FinishComponent }.isEmpty }.map{ $0.components.filter{ $0 is FinishComponent }.first as! FinishComponent }
-    }
-    
-    public var rotations: [RotateComponent] {
-        guard let currentScene = currentScene else {
-            return []
-        }
-        return currentScene.entities.filter{ !$0.components.filter{ $0 is RotateComponent }.isEmpty }.map{ $0.components.filter{ $0 is RotateComponent }.first as! RotateComponent }
-    }
-    
+        
     public var stateMachine: GKStateMachine?
          
     public weak var view: Presenter?
@@ -83,13 +64,12 @@ open class Game: GameComponentCollectionProtocol {
         assignDraggablesAndRotations()
         print(level.entities)
         stateMachine?.enter(PlayingState.self)
-        print(shootables)
         view?.presentScene(scene)
     }
     
     func assignStarts() {
         var i = 0
-        for start in starts {
+        for start in each(StartComponent.self) {
             start.player = players[i % players.count]
             i += 1
         }
@@ -100,6 +80,9 @@ open class Game: GameComponentCollectionProtocol {
         guard players.count > 0 else {
             return
         }
+        
+        let draggables = each(DragComponent.self)
+        let rotations = each(RotateComponent.self)
         
         let ma = max(draggables.count, rotations.count)
         let mi = min(draggables.count, rotations.count)

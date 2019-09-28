@@ -2,9 +2,7 @@ import Smorgasbord
 import GameplayKit
 
 open class RotateComponent: GameComponent {
-    
-    var player: Player? 
-    
+        
     var active = false
     
     var rKeyDown = false

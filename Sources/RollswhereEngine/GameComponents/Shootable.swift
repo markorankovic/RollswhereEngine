@@ -13,7 +13,7 @@ open class Shootable: GameComponent {
         return (entityNodeComponent?.node.scene as? GameScene)?.game
     }
     
-    var player: Player? {
+    override var player: Player? {
         set{}
         get {
             return entityNodeComponent?.node.parent?.entity as? Player
@@ -121,7 +121,7 @@ open class Shootable: GameComponent {
         switch event.keyCode {
         case 15:
             resetVelocity()
-            player?.playerControl?.returnToStart(shootable: self)
+            player?.component(ofType: PlayerControlComponent.self)?.returnToStart(shootable: self)
             stateMachine?.enter(RetryState.self)
             return
         default: return

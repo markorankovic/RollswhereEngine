@@ -3,13 +3,12 @@ import GameplayKit
 class PlayingState: GameState {
     
     override func didEnter(from previousState: GKState?) {
-        print(game?.currentScene?.entities)
         guard let players = game?.players else {
             return
         }
         
         for player in players {
-            player.playerControl?.initShootableStates()
+            player.component(ofType: PlayerControlComponent.self)?.initShootableStates()
         }
         
         print("PlayingState Entered.")
@@ -22,7 +21,7 @@ class PlayingState: GameState {
         }
         
         for player in players {
-            player.playerControl?.panGestureHandler(gestureRecognizer)
+            player.component(ofType: PlayerControlComponent.self)?.panGestureHandler(gestureRecognizer)
         }
 
     }
@@ -34,7 +33,7 @@ class PlayingState: GameState {
         }
                 
         for player in players {
-            player.playerControl?.keyDown(event)
+            player.component(ofType: PlayerControlComponent.self)?.keyDown(event)
         }
 
     }
@@ -46,7 +45,7 @@ class PlayingState: GameState {
         }
                 
         for player in players {
-            player.playerControl?.keyUp(event)
+            player.component(ofType: PlayerControlComponent.self)?.keyUp(event)
         }
 
     }

@@ -2,8 +2,11 @@ import GameplayKit
 
 open class PlayerControlComponent: GameComponent {
         
-    var player: Player? {
-        return entity as? Player
+    override var player: Player? {
+        set{}
+        get{
+            return entity as? Player
+        }
     }
     
     func initShootableStates() {
@@ -12,7 +15,7 @@ open class PlayerControlComponent: GameComponent {
             return
         }
         
-        for shootable in player.shootables {
+        for shootable in player.each(ofType: Shootable.self) {
             print(shootable.stateMachine)
             shootable.stateMachine?.enter(EnterLevelState.self)
         }
@@ -25,11 +28,11 @@ open class PlayerControlComponent: GameComponent {
             return
         }
         
-        for draggable in player.draggables {
+        for draggable in player.each(ofType: DragComponent.self) {
             draggable.panGestureHandler(gestureRecognizer)
         }
 
-        for rotation in player.rotations {
+        for rotation in player.each(ofType: RotateComponent.self) {
             rotation.panGestureHandler(gestureRecognizer)
         }
         
@@ -41,7 +44,7 @@ open class PlayerControlComponent: GameComponent {
             return
         }
 
-        for rotation in player.rotations {
+        for rotation in player.each(ofType: RotateComponent.self) {
             rotation.keyDown(event: event)
         }
         
@@ -53,7 +56,7 @@ open class PlayerControlComponent: GameComponent {
             return
         }
 
-        for rotation in player.rotations {
+        for rotation in player.each(ofType: RotateComponent.self) {
             rotation.keyUp(event: event)
         }
         
@@ -67,11 +70,13 @@ open class PlayerControlComponent: GameComponent {
             return
         }
 
-        guard player.starts.count > 0 else {
+        let startComponents = player.each(ofType: StartComponent.self)
+        
+        guard startComponents.count > 0 else {
             return
         }
         
-        guard let returnPos = player.starts[i % (player.starts.count)].entityNodeComponent?.node.position else {
+        guard let returnPos = startComponents[i % (startComponents.count)].entityNodeComponent?.node.position else {
             return
         }
         
