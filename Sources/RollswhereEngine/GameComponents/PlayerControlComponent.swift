@@ -16,7 +16,6 @@ open class PlayerControlComponent: GameComponent {
         }
         
         for shootable in player.each(ofType: Shootable.self) {
-            print(shootable.stateMachine)
             shootable.stateMachine?.enter(EnterLevelState.self)
         }
         

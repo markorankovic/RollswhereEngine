@@ -13,7 +13,7 @@ public class Player: GKEntity {
     
     public func each<Component: GameComponent>(ofType: Component.Type) -> [Component] {
         let componentsOfType = game?.each(ofType) ?? []
-        return componentsOfType.filter{ ($0 as? GameComponent)?.player == self }
+        return componentsOfType.filter{$0.player == self }
     }
                     
     var nodeComponent: GKSKNodeComponent? {
