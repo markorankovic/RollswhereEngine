@@ -2,9 +2,9 @@ import SpriteKit
 import GameplayKit
 
 open class Game: GameComponentCollectionProtocol {
-    
+        
     public init() {
-        stateMachine = GameStateMachine(game: self, player: nil, states: [
+        stateMachine = GKStateMachine(states: [
             MainMenuState(),
             PlayingState()
         ])
@@ -45,7 +45,7 @@ open class Game: GameComponentCollectionProtocol {
         return currentScene.entities.filter{ !$0.components.filter{ $0 is RotateComponent }.isEmpty }.map{ $0.components.filter{ $0 is RotateComponent }.first as! RotateComponent }
     }
     
-    public var stateMachine: GameStateMachine?
+    public var stateMachine: GKStateMachine?
          
     public weak var view: Presenter?
     
@@ -65,7 +65,7 @@ open class Game: GameComponentCollectionProtocol {
     func replaceGKEntitiesAsPlayers(level: GKScene) {
         for entity in level.entities {
             if (entity.component(ofType: GKSKNodeComponent.self)?.node as? PlayerNode) != nil {
-                let player = Player(game: self)
+                let player = Player()
                 for comp in entity.components {
                     player.addComponent(comp)
                 }
@@ -81,7 +81,9 @@ open class Game: GameComponentCollectionProtocol {
         let scene = level.rootNode as? GameScene
         assignStarts()
         assignDraggablesAndRotations()
+        print(level.entities)
         stateMachine?.enter(PlayingState.self)
+        print(shootables)
         view?.presentScene(scene)
     }
     
@@ -92,14 +94,20 @@ open class Game: GameComponentCollectionProtocol {
             i += 1
         }
     }
-    
+        
     func assignDraggablesAndRotations() {
+        
+        guard players.count > 0 else {
+            return
+        }
+        
         let ma = max(draggables.count, rotations.count)
         let mi = min(draggables.count, rotations.count)
         for i in 0..<ma {
-            draggables[i % mi].player = players[i % players.count]
-            rotations[i % mi].player = players[i % players.count]
+            draggables[i % (ma == draggables.count ? ma : mi)].player = players[i % players.count]
+            rotations[i % (ma == rotations.count ? ma : mi)].player = players[i % players.count]
         }
+        
     }
     
 }

@@ -14,7 +14,7 @@ class RetryState: GameState {
     }
         
     override func update(deltaTime seconds: TimeInterval) {
-        (self.stateMachine as? GameStateMachine)?.player?.enterReadyIfRested()
+        (self.stateMachine as? GameStateMachine)?.shootable?.enterReadyIfRested()
     }
 
 }

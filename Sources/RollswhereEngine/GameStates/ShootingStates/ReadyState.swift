@@ -9,15 +9,15 @@ class ReadyState: GameState {
     }
     
     override func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
-        (stateMachine as? GameStateMachine)?.player?.panGestureHandler(gestureRecognizer)
+        (stateMachine as? GameStateMachine)?.shootable?.panGestureHandler(gestureRecognizer)
     }
 
     override func keyDown(event: NSEvent) {
-        (stateMachine as? GameStateMachine)?.player?.keyDown(event)
+        (stateMachine as? GameStateMachine)?.shootable?.keyDown(event)
     }
     
     override func keyUp(event: NSEvent) {
-        (stateMachine as? GameStateMachine)?.player?.keyUp(event)
+        (stateMachine as? GameStateMachine)?.shootable?.keyUp(event)
         print("key is up")
     }
     

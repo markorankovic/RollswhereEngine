@@ -7,13 +7,19 @@ open class Shootable: GameComponent {
     
     var clickedLocation: CGPoint?
     
-    override var player: Player? {
-        set{}
-        get {
-            return entity as? Player
-        }
+    var stateMachine: GameStateMachine?
+    
+    var game: Game? {
+        return (entityNodeComponent?.node.scene as? GameScene)?.game
     }
     
+    var player: Player? {
+        set{}
+        get {
+            return entityNodeComponent?.node.parent?.entity as? Player
+        }
+    }
+        
     var entityPhysicsComponent: PhysicsComponent? {
         return entity?.components.filter{ $0 is PhysicsComponent }.first as? PhysicsComponent
     }
@@ -21,7 +27,27 @@ open class Shootable: GameComponent {
     var entityNodeComponent: GKSKNodeComponent? {
         return entity?.components.filter{ $0 is GKSKNodeComponent }.first as? GKSKNodeComponent
     }
-        
+            
+    public override init() {
+        super.init()
+        stateMachine = GameStateMachine(shootable: self, states: [
+            EnterLevelState(),
+            MovingState(),
+            ReadyState(),
+            RetryState()
+        ])
+    }
+    
+    required public init?(coder: NSCoder) {
+        super.init(coder: coder)
+        stateMachine = GameStateMachine(shootable: self, states: [
+            EnterLevelState(),
+            MovingState(),
+            ReadyState(),
+            RetryState()
+        ])
+    }
+    
     func activate(_ loc: CGPoint) {
         self.clickedLocation = loc
     }
@@ -45,11 +71,11 @@ open class Shootable: GameComponent {
         stateMachine?.enter(MovingState.self)
     }
     
-    func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer, _ stateMachine: GKStateMachine?) {
-        evaluate(gestureRecognizer, stateMachine)
+    func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
+        evaluate(gestureRecognizer)
     }
     
-    func evaluate(_ gestureRecognizer: NSPanGestureRecognizer, _ stateMachine: GKStateMachine?) {
+    func evaluate(_ gestureRecognizer: NSPanGestureRecognizer) {
         guard let scene = entityNodeComponent?.node.scene as? GameScene else {
             return
         }
@@ -89,6 +115,39 @@ open class Shootable: GameComponent {
             return false
         }
         return scene.nodes(at: loc).contains(visualnode)
+    }
+    
+    func returnIfSpecifiedKeyPressed(event: NSEvent) {
+        switch event.keyCode {
+        case 15:
+            resetVelocity()
+            player?.playerControl?.returnToStart(shootable: self)
+            stateMachine?.enter(RetryState.self)
+            return
+        default: return
+        }
+    }
+    
+    func resetVelocity() {
+        entityPhysicsComponent?.setVelocity(.init())
+        entityPhysicsComponent?.setAngularVelocity(0)
+    }
+    
+    func keyDown(_ event: NSEvent) {
+    }
+    
+    func keyUp(_ event: NSEvent) {
+    }
+                
+    func enterReadyIfRested() {
+        guard let physicsbody = entityPhysicsComponent?.physicsBody else {
+            return
+        }
+        print(physicsbody.velocity)
+        if !physicsbody.isResting {
+            return
+        }
+        stateMachine?.enter(ReadyState.self)
     }
     
 }

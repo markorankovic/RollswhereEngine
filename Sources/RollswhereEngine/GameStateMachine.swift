@@ -2,14 +2,15 @@ import GameplayKit
 
 public class GameStateMachine: GKStateMachine {
     
-    var game: Game?
+    var game: Game? {
+        shootable?.game
+    }
     
-    var player: Player?
+    var shootable: Shootable?
     
-    convenience init(game: Game?, player: Player?, states: [GKState]) {
+    convenience init(shootable: Shootable?, states: [GKState]) {
         self.init(states: states)
-        self.game = game
-        self.player = player
+        self.shootable = shootable
     }
     
 }

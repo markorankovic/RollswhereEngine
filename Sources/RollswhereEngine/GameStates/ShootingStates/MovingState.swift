@@ -8,12 +8,12 @@ class MovingState: GameState {
     }
     
     override func keyDown(event: NSEvent) {
-        (stateMachine as? GameStateMachine)?.player?.returnIfSpecifiedKeyPressed(event: event)
+        (stateMachine as? GameStateMachine)?.shootable?.returnIfSpecifiedKeyPressed(event: event)
     }
     
     override func update(deltaTime seconds: TimeInterval) {
         DispatchQueue.main.async {
-            (self.stateMachine as? GameStateMachine)?.player?.enterReadyIfRested()
+            (self.stateMachine as? GameStateMachine)?.shootable?.enterReadyIfRested()
         }
     }
 

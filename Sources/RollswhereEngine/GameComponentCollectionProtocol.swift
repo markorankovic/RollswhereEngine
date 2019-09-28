@@ -19,5 +19,5 @@ protocol GameComponentCollectionProtocol {
     var finishes: [FinishComponent] {
         get
     }
-    
+        
 }

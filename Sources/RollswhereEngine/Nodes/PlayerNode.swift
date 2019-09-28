@@ -1,3 +1,3 @@
 import SpriteKit
 
-open class PlayerNode: SKSpriteNode { }
+open class PlayerNode: SKNode { }

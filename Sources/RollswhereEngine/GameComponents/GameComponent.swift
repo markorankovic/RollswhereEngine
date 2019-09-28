@@ -3,6 +3,4 @@ import GameplayKit
 
 open class GameComponent: GKComponent {
     
-    var player: Player? = nil
-
 }
