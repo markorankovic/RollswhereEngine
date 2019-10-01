@@ -23,7 +23,7 @@ open class Shootable: GameComponent {
             
     public override init() {
         super.init()
-        stateMachine = GameStateMachine(shootable: self, states: [
+        stateMachine = GameStateMachine(game: game, shootable: self, states: [
             EnterLevelState(),
             MovingState(),
             ReadyState(),
@@ -33,7 +33,7 @@ open class Shootable: GameComponent {
     
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
-        stateMachine = GameStateMachine(shootable: self, states: [
+        stateMachine = GameStateMachine(game: game, shootable: self, states: [
             EnterLevelState(),
             MovingState(),
             ReadyState(),

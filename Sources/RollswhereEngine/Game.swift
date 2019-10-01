@@ -74,7 +74,7 @@ open class Game {
         assignShootables()
                 
         stateMachine?.enter(PlayingState.self)
-        view?.presentScene(scene)        
+        view?.presentScene(scene)
     }
     
     func assignStarts() {
