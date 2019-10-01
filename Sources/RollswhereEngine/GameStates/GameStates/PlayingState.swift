@@ -3,6 +3,9 @@ import GameplayKit
 class PlayingState: GameState {
     
     override func didEnter(from previousState: GKState?) {
+        
+        print("PlayingState Entered.")
+
         guard let players = game?.players else {
             return
         }
@@ -11,7 +14,6 @@ class PlayingState: GameState {
             player.component(ofType: PlayerControlComponent.self)?.initShootableStates()
         }
         
-        print("PlayingState Entered.")
     }
     
     override func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
@@ -21,7 +23,15 @@ class PlayingState: GameState {
         }
         
         for player in players {
-            player.component(ofType: PlayerControlComponent.self)?.panGestureHandler(gestureRecognizer)
+            for shootable in player.shootables {
+                (shootable.stateMachine?.currentState as? GameState)?.panGestureHandler(gestureRecognizer)
+            }
+            for dragComponent in player.each(ofType: DragComponent.self) {
+                dragComponent.panGestureHandler(gestureRecognizer)
+            }
+            for rotateComponent in player.each(ofType: RotateComponent.self) {
+                rotateComponent.panGestureHandler(gestureRecognizer)
+            }
         }
 
     }
@@ -31,9 +41,14 @@ class PlayingState: GameState {
         guard let players = game?.players else {
             return
         }
-                
+        
         for player in players {
-            player.component(ofType: PlayerControlComponent.self)?.keyDown(event)
+            for shootable in player.shootables {
+                (shootable.stateMachine?.currentState as? GameState)?.keyDown(event: event)
+            }
+            for rotateComponent in player.each(ofType: RotateComponent.self) {
+                rotateComponent.keyDown(event: event)
+            }
         }
 
     }
@@ -43,11 +58,13 @@ class PlayingState: GameState {
         guard let players = game?.players else {
             return
         }
-                
+        
         for player in players {
-            player.component(ofType: PlayerControlComponent.self)?.keyUp(event)
+            for rotateComponent in player.each(ofType: RotateComponent.self) {
+                rotateComponent.keyUp(event: event)
+            }
         }
-
+        
     }
 
     override func update(deltaTime seconds: TimeInterval) {
@@ -57,7 +74,9 @@ class PlayingState: GameState {
         }
         
         for player in players {
-            player.update(deltaTime: seconds)
+            for shootable in player.shootables {
+                shootable.stateMachine?.update(deltaTime: seconds)
+            }
         }
         
     }

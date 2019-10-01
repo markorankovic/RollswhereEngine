@@ -11,5 +11,7 @@ open class StartComponent: GameComponent {
         return entity?.components.filter{ $0 is GKSKNodeComponent }.first as? GKSKNodeComponent
     }
     
+    var shootable: Shootable?
+    
 }
 

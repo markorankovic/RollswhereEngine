@@ -8,7 +8,7 @@ class MovingState: GameState {
     }
     
     override func keyDown(event: NSEvent) {
-        (stateMachine as? GameStateMachine)?.shootable?.returnIfSpecifiedKeyPressed(event: event)
+        (self.stateMachine as? GameStateMachine)?.shootable?.keyDown(event)
     }
     
     override func update(deltaTime seconds: TimeInterval) {

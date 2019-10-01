@@ -12,14 +12,7 @@ open class Shootable: GameComponent {
     var game: Game? {
         return (entityNodeComponent?.node.scene as? GameScene)?.game
     }
-    
-    override var player: Player? {
-        set{}
-        get {
-            return entityNodeComponent?.node.parent?.entity as? Player
-        }
-    }
-        
+            
     var entityPhysicsComponent: PhysicsComponent? {
         return entity?.components.filter{ $0 is PhysicsComponent }.first as? PhysicsComponent
     }
@@ -121,7 +114,6 @@ open class Shootable: GameComponent {
         switch event.keyCode {
         case 15:
             resetVelocity()
-            player?.component(ofType: PlayerControlComponent.self)?.returnToStart(shootable: self)
             stateMachine?.enter(RetryState.self)
             return
         default: return
@@ -134,6 +126,7 @@ open class Shootable: GameComponent {
     }
     
     func keyDown(_ event: NSEvent) {
+        returnIfSpecifiedKeyPressed(event: event)
     }
     
     func keyUp(_ event: NSEvent) {
@@ -149,5 +142,22 @@ open class Shootable: GameComponent {
         }
         stateMachine?.enter(ReadyState.self)
     }
-    
+ 
+    func returnToStart() {
+        guard let game = player?.game else {
+            return
+        }
+
+        guard let startComponent = (game.each(StartComponent.self).filter{ $0.shootable == self }.first) else {
+            return
+        }
+                
+        guard let returnPos = startComponent.entityNodeComponent?.node.position else {
+            return
+        }
+        
+        entityNodeComponent?.node.position = returnPos
+        
+    }
+        
 }

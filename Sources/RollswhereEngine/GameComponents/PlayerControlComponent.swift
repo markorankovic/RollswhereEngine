@@ -1,24 +1,12 @@
 import GameplayKit
 
 open class PlayerControlComponent: GameComponent {
-        
-    override var player: Player? {
-        set{}
-        get{
-            return entity as? Player
-        }
-    }
-    
+                    
     func initShootableStates() {
-        
-        guard let player = player else {
-            return
-        }
-        
-        for shootable in player.each(ofType: Shootable.self) {
+        guard let player = player else { return }
+        for shootable in player.shootables {
             shootable.stateMachine?.enter(EnterLevelState.self)
         }
-        
     }
 
     func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
@@ -26,7 +14,7 @@ open class PlayerControlComponent: GameComponent {
         guard let player = player else {
             return
         }
-        
+                
         for draggable in player.each(ofType: DragComponent.self) {
             draggable.panGestureHandler(gestureRecognizer)
         }
@@ -42,7 +30,7 @@ open class PlayerControlComponent: GameComponent {
         guard let player = player else {
             return
         }
-
+        
         for rotation in player.each(ofType: RotateComponent.self) {
             rotation.keyDown(event: event)
         }
@@ -60,28 +48,5 @@ open class PlayerControlComponent: GameComponent {
         }
         
     }
-    
-    var i = 0
-
-    func returnToStart(shootable: Shootable) {
         
-        guard let player = player else {
-            return
-        }
-
-        let startComponents = player.each(ofType: StartComponent.self)
-        
-        guard startComponents.count > 0 else {
-            return
-        }
-        
-        guard let returnPos = startComponents[i % (startComponents.count)].entityNodeComponent?.node.position else {
-            return
-        }
-        
-        shootable.entityNodeComponent?.node.position = returnPos
-        i += 1
-        
-    }
-
 }
