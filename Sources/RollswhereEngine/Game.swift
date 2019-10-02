@@ -28,19 +28,12 @@ open class Game {
     }
         
     public var stateMachine: GameStateMachine?
-         
     public weak var view: Presenter?
-    
     public var currentScene: GKScene?
-    
-    public var currentGameScene: GameScene? {
-        currentScene?.rootNode as? GameScene
-    }
+    public var currentGameScene: GameScene? { currentScene?.rootNode as? GameScene }
                 
     var players: [Player] {
-        guard let level = currentScene else {
-            return []
-        }
+        guard let level = currentScene else { return [] }
         return level.entities.compactMap{ $0 as? Player }
     }
 
@@ -54,25 +47,29 @@ open class Game {
         }
     }
     
-    func getPlayersFromScene(_ scene: GameScene) -> [Player] {
-        return scene.children.filter{ $0.name == "playerbox" }.map{
-            let p = Player(game: self)
-            p.addComponent(GKSKNodeComponent(node: $0))
-            return p
+    func getPlayersFromShootables() -> [Player] {
+        let shootableNodes = each(Shootable.self).compactMap{ $0.entityNodeComponent?.node }
+        var players: [Player] = []
+        let arr = (shootableNodes.compactMap{ $0.userData?["player"] as? Int })
+        let set = Set(arr)
+        for _ in set {
+            players.append(Player(game: self))
         }
+        return players
     }
     
     open func runLevel(_ level: GKScene) {
         currentScene = level
-        
         guard let scene = level.rootNode as? GameScene else { return }
         
-        addPlayers(to: level, players: getPlayersFromScene(scene))
+        addPlayers(to: level, players: getPlayersFromShootables())
         
         assignStarts()
         assignDraggablesAndRotations()
         assignShootables()
                 
+        print(players)
+        
         stateMachine?.enter(PlayingState.self)
         view?.presentScene(scene)
     }
@@ -87,7 +84,6 @@ open class Game {
     }
         
     func assignDraggablesAndRotations() {
-        
         guard players.count > 0 else { return }
         
         let draggables = each(DragComponent.self)
@@ -100,19 +96,15 @@ open class Game {
             draggables[i % (ma == draggables.count ? ma : mi)].player = players[i % players.count]
             rotations[i % (ma == rotations.count ? ma : mi)].player = players[i % players.count]
         }
-        
     }
     
     func assignShootables() {
         for shootable in each(Shootable.self) {
-            for player in players {
-                guard let shootableNode = shootable.entityNodeComponent?.node else { continue }
-                guard let playerNode = player.nodeComponent?.node else { continue }
-                if playerNode.frame.intersects(shootableNode.frame) {
-                    shootable.player = player
-                }
-            }
+            guard let shootableNodeData = shootable.entityNodeComponent?.node.userData else { continue }
+            guard let playerIndex = shootableNodeData["player"] as? Int else { continue }
+            shootable.player = players[playerIndex]
         }
     }
     
 }
+

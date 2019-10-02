@@ -1,5 +1,3 @@
 import GameplayKit
 
-class MainMenuState: GameState {
-    
-}
+class MainMenuState: GameState { }

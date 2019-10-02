@@ -2,7 +2,6 @@ import GameplayKit
 
 class RetryState: GameState {
     
-    
     override func didEnter(from previousState: GKState?) {
         if let previousState = previousState {
             if previousState is EnterLevelState {

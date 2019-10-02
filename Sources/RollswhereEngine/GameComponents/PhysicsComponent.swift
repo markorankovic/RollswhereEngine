@@ -3,18 +3,14 @@ import GameplayKit
 
 open class PhysicsComponent: GameComponent {
     
-    public required init?(coder: NSCoder) {
-        super.init()
-    }
+    public required init?(coder: NSCoder) { super.init() }
     
     var physicsBody: SKPhysicsBody? {
         return entity?.component(ofType: GKSKNodeComponent.self)?.node.physicsBody
     }
     
     var noContact: Bool {
-        guard let physicsBody = physicsBody else {
-            return false
-        }
+        guard let physicsBody = physicsBody else { return false }
         return physicsBody.allContactedBodies().count == 0
     }
                 

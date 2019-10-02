@@ -17,9 +17,7 @@ public class Player: GKEntity {
     }
      
     var shootables: [Shootable] {
-        guard let scene = game?.currentScene else {
-            return []
-        }
+        guard let scene = game?.currentScene else { return [] }
         var shootables: [Shootable] = []
         for entity in scene.entities {
             for comp in entity.components {
@@ -51,8 +49,6 @@ public class Player: GKEntity {
         self.game = game
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
 }
