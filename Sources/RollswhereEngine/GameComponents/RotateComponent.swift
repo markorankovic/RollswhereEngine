@@ -18,7 +18,7 @@ open class RotateComponent: GameComponent {
     }
     
     var rotating = false
-
+    
     func beingDragged(_ gestureRecognizer: NSPanGestureRecognizer) -> Bool {
         guard let node = nodeComponent?.node else { return false }
         guard let scene = node.scene else { return false }

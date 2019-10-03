@@ -25,7 +25,7 @@ open class DragComponent: GameComponent {
     var rotateComponent: RotateComponent? {
         return entity?.components.filter{ $0 is RotateComponent }.first as? RotateComponent
     }
-    
+        
     func beingDragged(_ gestureRecognizer: NSPanGestureRecognizer) -> Bool {
         guard let node = nodeComponent?.node else { return false }
         guard let scene = node.scene else { return false }

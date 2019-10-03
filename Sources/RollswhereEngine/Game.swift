@@ -1,17 +1,6 @@
 import SpriteKit
 import GameplayKit
-
-extension Sequence {
-    func first<T>(_: T.Type) -> T? {
-        return first{ $0 is T } as? T
-    }
-}
-
-extension GKScene {
-    func each<T: GKComponent>(_: T.Type) -> [T] {
-        return entities.compactMap{ $0.components.first(T.self) }
-    }
-}
+import Smorgasbord
 
 open class Game {
         
@@ -65,7 +54,8 @@ open class Game {
         addPlayers(to: level, players: getPlayersFromShootables())
         
         assignStarts()
-        assignDraggablesAndRotations()
+        assignDraggables()
+        assignRotations()
         assignShootables()
                 
         print(players)
@@ -74,27 +64,29 @@ open class Game {
         view?.presentScene(scene)
     }
     
-    func assignStarts() {
-        var i = 0
-        let shootables = each(Shootable.self)
-        for start in each(StartComponent.self) {
-            start.shootable = shootables[i % shootables.count]
-            i += 1
+    func assignStarts() { // Only works if start nodes are sorted left-right min-max
+        let startComponents = each(StartComponent.self)
+        for shootable in each(Shootable.self) {
+            guard let shootableNodeData = shootable.entityNodeComponent?.node.userData else { continue }
+            print(shootableNodeData)
+            guard let index = shootableNodeData["start"] as? Int else { continue }
+            startComponents[index].shootable = shootable
         }
     }
         
-    func assignDraggablesAndRotations() {
+    func assignDraggables() {
         guard players.count > 0 else { return }
-        
         let draggables = each(DragComponent.self)
+        for i in 0..<draggables.count {
+            draggables[i % draggables.count].player = players[i % players.count]
+        }
+    }
+    
+    func assignRotations() {
+        guard players.count > 0 else { return }
         let rotations = each(RotateComponent.self)
-        
-        let ma = max(draggables.count, rotations.count)
-        let mi = min(draggables.count, rotations.count)
-        
-        for i in 0..<ma {
-            draggables[i % (ma == draggables.count ? ma : mi)].player = players[i % players.count]
-            rotations[i % (ma == rotations.count ? ma : mi)].player = players[i % players.count]
+        for i in 0..<rotations.count {
+            rotations[i % rotations.count].player = players[i % players.count]
         }
     }
     
