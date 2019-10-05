@@ -57,9 +57,7 @@ open class Game {
         assignDraggables()
         assignRotations()
         assignShootables()
-                
-        print(players)
-        
+                        
         stateMachine?.enter(PlayingState.self)
         view?.presentScene(scene)
     }
@@ -85,7 +83,7 @@ open class Game {
         associateComponentsWithPlayer(each(Shootable.self))
     }
         
-    func getPlayerFromComponentSKNodeData(component: GameComponent) -> Player? {
+    func getPlayerFromComponentSKNodeData(_ component: GameComponent) -> Player? {
         guard let nodeData = component.nodeComponent?.node.userData else {
             return nil
         }
@@ -95,13 +93,12 @@ open class Game {
         guard i < players.count && i >= 0 else {
             return nil
         }
-        print(players[i])
         return players[i]
     }
     
     func associateComponentsWithPlayer(_ components: [GameComponent]) {
         for component in components {
-            component.player = getPlayerFromComponentSKNodeData(component: component)
+            component.player = getPlayerFromComponentSKNodeData(component)
         }
     }
     
