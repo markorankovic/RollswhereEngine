@@ -13,11 +13,7 @@ open class DragComponent: GameComponent {
     func deactivate() {
         active = false
     }
-    
-    var nodeComponent: GKSKNodeComponent? {
-        return entity?.components.filter{ $0 is GKSKNodeComponent }.first as? GKSKNodeComponent
-    }
-    
+        
     var physicsComponent: PhysicsComponent? {
         return entity?.components.filter{ $0 is PhysicsComponent }.first as? PhysicsComponent
     }
@@ -65,7 +61,6 @@ open class DragComponent: GameComponent {
     }
     
 }
-
 
 extension GKSKNodeComponent {
     func moveBy(_ velocity: CGPoint, _ duration: TimeInterval) {

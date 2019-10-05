@@ -8,17 +8,17 @@ open class Shootable: GameComponent {
     var stateMachine: GameStateMachine?
     
     var game: Game? {
-        return (entityNodeComponent?.node.scene as? GameScene)?.game
+        return (nodeComponent?.node.scene as? GameScene)?.game
     }
             
     var entityPhysicsComponent: PhysicsComponent? {
         return entity?.components.filter{ $0 is PhysicsComponent }.first as? PhysicsComponent
     }
     
-    var entityNodeComponent: GKSKNodeComponent? {
+    override var nodeComponent: GKSKNodeComponent? {
         return entity?.components.filter{ $0 is GKSKNodeComponent }.first as? GKSKNodeComponent
     }
-            
+    
     public override init() {
         super.init()
         stateMachine = GameStateMachine(game: game, shootable: self, states: [
@@ -56,11 +56,11 @@ open class Shootable: GameComponent {
     }
     
     func evaluate(_ gestureRecognizer: NSPanGestureRecognizer) {
-        guard let scene = entityNodeComponent?.node.scene as? GameScene else {
+        guard let scene = nodeComponent?.node.scene as? GameScene else {
             return
         }
                         
-        guard let node = entityNodeComponent?.node else {
+        guard let node = nodeComponent?.node else {
             return
         }
                         
@@ -91,7 +91,7 @@ open class Shootable: GameComponent {
     }
     
     func clickedOn(clickLocation loc: CGPoint, scene: GameScene) -> Bool {
-        guard let visualnode = entityNodeComponent?.node else { return false }
+        guard let visualnode = nodeComponent?.node else { return false }
         return scene.nodes(at: loc).contains(visualnode)
     }
     
@@ -122,8 +122,8 @@ open class Shootable: GameComponent {
     func returnToStart() {
         guard let game = player?.game else { return }
         guard let startComponent = (game.each(StartComponent.self).filter{ $0.shootable == self }.first) else { return }
-        guard let returnPos = startComponent.entityNodeComponent?.node.position else { return }
-        entityNodeComponent?.node.position = returnPos
+        guard let returnPos = startComponent.nodeComponent?.node.position else { return }
+        nodeComponent?.node.position = returnPos
     }
         
 }

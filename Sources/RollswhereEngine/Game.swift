@@ -37,9 +37,9 @@ open class Game {
     }
     
     func getPlayersFromShootables() -> [Player] {
-        let shootableNodes = each(Shootable.self).compactMap{ $0.entityNodeComponent?.node }
+        let shootableNodes = each(Shootable.self).compactMap{ $0.nodeComponent?.node }
         var players: [Player] = []
-        let arr = (shootableNodes.compactMap{ $0.userData?["player"] as? Int })
+        let arr = (shootableNodes.compactMap{ $0.userData?["shootable"] as? Int })
         let set = Set(arr)
         for _ in set {
             players.append(Player(game: self))
@@ -67,36 +67,42 @@ open class Game {
     func assignStarts() { // Only works if start nodes are sorted left-right min-max
         let startComponents = each(StartComponent.self)
         for shootable in each(Shootable.self) {
-            guard let shootableNodeData = shootable.entityNodeComponent?.node.userData else { continue }
-            print(shootableNodeData)
+            guard let shootableNodeData = shootable.nodeComponent?.node.userData else { continue }
             guard let index = shootableNodeData["start"] as? Int else { continue }
             startComponents[index].shootable = shootable
         }
     }
         
     func assignDraggables() {
-        guard players.count > 0 else { return }
-        let draggables = each(DragComponent.self)
-        for i in 0..<draggables.count {
-            draggables[i % draggables.count].player = players[i % players.count]
-        }
+        associateComponentsWithPlayer(each(DragComponent.self))
     }
     
     func assignRotations() {
-        guard players.count > 0 else { return }
-        let rotations = each(RotateComponent.self)
-        for i in 0..<rotations.count {
-            rotations[i % rotations.count].player = players[i % players.count]
-        }
+        associateComponentsWithPlayer(each(RotateComponent.self))
     }
     
     func assignShootables() {
-        for shootable in each(Shootable.self) {
-            guard let shootableNodeData = shootable.entityNodeComponent?.node.userData else { continue }
-            guard let playerIndex = shootableNodeData["player"] as? Int else { continue }
-            shootable.player = players[playerIndex]
+        associateComponentsWithPlayer(each(Shootable.self))
+    }
+        
+    func getPlayerFromComponentSKNodeData(component: GameComponent) -> Player? {
+        guard let nodeData = component.nodeComponent?.node.userData else {
+            return nil
+        }
+        guard let i = nodeData["\(component.className.lowercased().split(separator: ".")[1])"] as? Int else {
+            return nil
+        }
+        guard i < players.count && i >= 0 else {
+            return nil
+        }
+        print(players[i])
+        return players[i]
+    }
+    
+    func associateComponentsWithPlayer(_ components: [GameComponent]) {
+        for component in components {
+            component.player = getPlayerFromComponentSKNodeData(component: component)
         }
     }
     
 }
-
