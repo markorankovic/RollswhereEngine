@@ -5,7 +5,7 @@ open class PlayerControlComponent: GameComponent {
     func initShootableStates() {
         guard let player = player else { return }
         for shootable in player.shootables {
-            shootable.stateMachine?.enter(EnterLevelState.self)
+            shootable.stateMachine?.enter(RetryState.self)
         }
     }
 

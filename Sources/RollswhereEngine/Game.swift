@@ -6,6 +6,7 @@ open class Game {
         
     public init() {
         stateMachine = GameStateMachine(states: [
+            EnterLevelState(),
             PlayingState(),
             MainMenuState()
         ])
@@ -58,7 +59,7 @@ open class Game {
         assignRotations()
         assignShootables()
                         
-        stateMachine?.enter(PlayingState.self)
+        stateMachine?.enter(EnterLevelState.self)
         view?.presentScene(scene)
     }
     
