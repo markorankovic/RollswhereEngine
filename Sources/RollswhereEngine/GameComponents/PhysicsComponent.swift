@@ -5,6 +5,10 @@ open class PhysicsComponent: GameComponent {
     
     public required init?(coder: NSCoder) { super.init() }
     
+    func setCategoryBitMask(_ bitMask: Int) {
+        physicsBody?.categoryBitMask = 0
+    }
+    
     var physicsBody: SKPhysicsBody? {
         return entity?.component(ofType: GKSKNodeComponent.self)?.node.physicsBody
     }

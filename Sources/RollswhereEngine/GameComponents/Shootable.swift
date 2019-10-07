@@ -7,11 +7,15 @@ open class Shootable: GameComponent {
     var clickedLocation: CGPoint?
     var stateMachine: GameStateMachine?
     
+    func deactivateCollisionWithDynamics() {
+        //physicsComponent.setCategoryBitMask(0)
+    }
+    
     var game: Game? {
         return (nodeComponent?.node.scene as? GameScene)?.game
     }
             
-    var entityPhysicsComponent: PhysicsComponent? {
+    var physicsComponent: PhysicsComponent? {
         return entity?.components.filter{ $0 is PhysicsComponent }.first as? PhysicsComponent
     }
     
@@ -45,8 +49,8 @@ open class Shootable: GameComponent {
     func increasePower(_ by: CGFloat) { setPower(power + by) }
     
     func shoot(_ stateMachine: GKStateMachine?) {
-        entityPhysicsComponent?.setVelocity(.init(dx: power, dy: 0))
-        entityPhysicsComponent?.toggleGravity(on: true)
+        physicsComponent?.setVelocity(.init(dx: power, dy: 0))
+        physicsComponent?.toggleGravity(on: true)
         setPower(0)
         stateMachine?.enter(MovingState.self)
     }
@@ -106,14 +110,14 @@ open class Shootable: GameComponent {
     }
     
     func resetVelocity() {
-        entityPhysicsComponent?.setVelocity(.init())
-        entityPhysicsComponent?.setAngularVelocity(0)
+        physicsComponent?.setVelocity(.init())
+        physicsComponent?.setAngularVelocity(0)
     }
     
     func keyDown(_ event: NSEvent) { returnIfSpecifiedKeyPressed(event: event) }
                     
     func enterReadyIfRested() {
-        guard let physicsbody = entityPhysicsComponent?.physicsBody else { return }
+        guard let physicsbody = physicsComponent?.physicsBody else { return }
         print(physicsbody.velocity)
         if !physicsbody.isResting { return }
         stateMachine?.enter(ReadyState.self)
@@ -121,8 +125,12 @@ open class Shootable: GameComponent {
  
     func returnToStart() {
         guard let game = player?.game else { return }
+        guard let scene = game.currentGameScene else { return }
         guard let startComponent = (game.each(StartComponent.self).filter{ $0.shootable == self }.first) else { return }
-        guard let returnPos = startComponent.nodeComponent?.node.position else { return }
+        guard let startNode = startComponent.nodeComponent?.node else { return }
+        guard let parentNode = startNode.parent else { return }
+        print(startNode)
+        let returnPos = startNode.position + parentNode.position
         nodeComponent?.node.position = returnPos
     }
         
