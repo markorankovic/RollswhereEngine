@@ -128,9 +128,8 @@ open class Shootable: GameComponent {
         guard let scene = game.currentGameScene else { return }
         guard let startComponent = (game.each(StartComponent.self).filter{ $0.shootable == self }.first) else { return }
         guard let startNode = startComponent.nodeComponent?.node else { return }
-        guard let parentNode = startNode.parent else { return }
-        print(startNode)
-        let returnPos = startNode.position + parentNode.position
+        //guard let parentNode = startNode.parent else { return }
+        let returnPos = scene.convert(.init(), from: startNode)
         nodeComponent?.node.position = returnPos
     }
         
