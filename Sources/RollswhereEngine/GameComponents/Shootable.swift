@@ -4,41 +4,55 @@ import Smorgasbord
 open class Shootable: GameComponent {
             
     var power: CGFloat = 0
-    
     var clickedLocation: CGPoint?
+    var stateMachine: GameStateMachine?
     
-    var entityPhysicsComponent: PhysicsComponent? {
+    func deactivateCollisionWithDynamics() {
+        //physicsComponent.setCategoryBitMask(0)
+    }
+    
+    var game: Game? {
+        return (nodeComponent?.node.scene as? GameScene)?.game
+    }
+            
+    var physicsComponent: PhysicsComponent? {
         return entity?.components.filter{ $0 is PhysicsComponent }.first as? PhysicsComponent
     }
     
-    var entityNodeComponent: GKSKNodeComponent? {
+    override var nodeComponent: GKSKNodeComponent? {
         return entity?.components.filter{ $0 is GKSKNodeComponent }.first as? GKSKNodeComponent
     }
-        
-    func activate(_ loc: CGPoint) {
-        self.clickedLocation = loc
+    
+    public override init() {
+        super.init()
+        stateMachine = GameStateMachine(game: game, shootable: self, states: [
+            EnterLevelState(),
+            MovingState(),
+            ReadyState(),
+            RetryState()
+        ])
     }
     
-    func deactivate() {
-        clickedLocation = nil
+    required public init?(coder: NSCoder) {
+        super.init(coder: coder)
+        stateMachine = GameStateMachine(game: game, shootable: self, states: [
+            EnterLevelState(),
+            MovingState(),
+            ReadyState(),
+            RetryState()
+        ])
     }
     
-    func setPower(_ to: CGFloat) {
-        power = to
-    }
+    func activate(_ loc: CGPoint) { self.clickedLocation = loc }
+    func deactivate() { clickedLocation = nil}
+    func setPower(_ to: CGFloat) { power = to }
+    func increasePower(_ by: CGFloat) { setPower(power + by) }
     
-    func increasePower(_ by: CGFloat) {
-        setPower(power + by)
-    }
-    
-    func shoot() {
-        guard let scene = entityNodeComponent?.node.scene as? GameScene else {
-            return
-        }
-        entityPhysicsComponent?.setVelocity(.init(dx: power, dy: 0))
-        entityPhysicsComponent?.toggleGravity(on: true)
+    func shoot(_ stateMachine: GKStateMachine?) {
+        physicsComponent?.setVelocity(.init(dx: power, dy: 0))
+        physicsComponent?.toggleGravity(on: true)
         setPower(0)
-        scene.state?.stateMachine?.enter(MovingState.self)
+        stateMachine?.enter(MovingState.self)
     }
     
     func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
@@ -46,11 +60,11 @@ open class Shootable: GameComponent {
     }
     
     func evaluate(_ gestureRecognizer: NSPanGestureRecognizer) {
-        guard let scene = entityNodeComponent?.node.scene as? GameScene else {
+        guard let scene = nodeComponent?.node.scene as? GameScene else {
             return
         }
                         
-        guard let node = entityNodeComponent?.node else {
+        guard let node = nodeComponent?.node else {
             return
         }
                         
@@ -65,7 +79,7 @@ open class Shootable: GameComponent {
         case .ended:
             deactivate()
             if power > 50 {
-                shoot()
+                shoot(stateMachine) 
                 return
             }
             break
@@ -81,10 +95,42 @@ open class Shootable: GameComponent {
     }
     
     func clickedOn(clickLocation loc: CGPoint, scene: GameScene) -> Bool {
-        guard let visualnode = entityNodeComponent?.node else {
-            return false
-        }
+        guard let visualnode = nodeComponent?.node else { return false }
         return scene.nodes(at: loc).contains(visualnode)
     }
     
+    func returnIfSpecifiedKeyPressed(event: NSEvent) {
+        switch event.keyCode {
+            case 15:
+                resetVelocity()
+                stateMachine?.enter(RetryState.self)
+                return
+            default: return
+        }
+    }
+    
+    func resetVelocity() {
+        physicsComponent?.setVelocity(.init())
+        physicsComponent?.setAngularVelocity(0)
+    }
+    
+    func keyDown(_ event: NSEvent) { returnIfSpecifiedKeyPressed(event: event) }
+                    
+    func enterReadyIfRested() {
+        guard let physicsbody = physicsComponent?.physicsBody else { return }
+        print(physicsbody.velocity)
+        if !physicsbody.isResting { return }
+        stateMachine?.enter(ReadyState.self)
+    }
+ 
+    func returnToStart() {
+        guard let game = player?.game else { return }
+        guard let scene = game.currentGameScene else { return }
+        guard let startComponent = (game.each(StartComponent.self).filter{ $0.shootable == self }.first) else { return }
+        guard let startNode = startComponent.nodeComponent?.node else { return }
+        //guard let parentNode = startNode.parent else { return }
+        let returnPos = scene.convert(.init(), from: startNode)
+        nodeComponent?.node.position = returnPos
+    }
+        
 }

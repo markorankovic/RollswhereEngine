@@ -20,13 +20,10 @@ public class GameView: SKView {
     public override func viewDidMoveToWindow() {
         let pan = NSPanGestureRecognizer(target: self, action: #selector(panGestureHandler))
         addGestureRecognizer(pan)
-        showsPhysics = true
     }
     
     @IBAction func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
-        //DispatchQueue.main.async {
-            self.game?.currentGameScene?.panGestureHandler(gestureRecognizer)
-        //}
+        self.game?.currentGameScene?.panGestureHandler(gestureRecognizer)
     }
     
     public func connectToGame(_ game: Game) {

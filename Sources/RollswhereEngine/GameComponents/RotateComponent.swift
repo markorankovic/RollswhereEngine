@@ -2,46 +2,28 @@ import Smorgasbord
 import GameplayKit
 
 open class RotateComponent: GameComponent {
-    
+        
     var active = false
-    
     var rKeyDown = false
     
-    func activate() {
-        active = true
-    }
-    
-    func deactivate() {
-        active = false
-    }
-    
-    var nodeComponent: GKSKNodeComponent? {
-        return entity?.components.filter{ $0 is GKSKNodeComponent }.first as? GKSKNodeComponent
-    }
-    
+    func activate() {active = true}
+    func deactivate() { active = false }
+        
     var physicsComponent: PhysicsComponent? {
         return entity?.components.filter{ $0 is PhysicsComponent }.first as? PhysicsComponent
     }
     
     var rotating = false
-
+    
     func beingDragged(_ gestureRecognizer: NSPanGestureRecognizer) -> Bool {
-        guard let node = nodeComponent?.node else {
-            return false
-        }
-        guard let scene = node.scene else {
-            return false
-        }
-        
+        guard let node = nodeComponent?.node else { return false }
+        guard let scene = node.scene else { return false }
         let location = gestureRecognizer.location(in: scene.view)
-            
         return scene.nodes(at: scene.convertPoint(fromView: location)).contains(node)
     }
     
     func rotateBy(_ gestureRecognizer: NSPanGestureRecognizer) {
-        guard let scene = nodeComponent?.node.scene else {
-            return
-        }
+        guard let scene = nodeComponent?.node.scene else { return }
         let velocity = gestureRecognizer.velocity(in: scene.view) * 0.001
         nodeComponent?.rotateBy(velocity, 0.1)
     }
@@ -55,6 +37,7 @@ open class RotateComponent: GameComponent {
             return
         case .ended:
             deactivate()
+            print(arc4random())
             rKeyDown = false
             rotating = false
             return
@@ -71,28 +54,22 @@ open class RotateComponent: GameComponent {
     }
     
     func keyDown(event: NSEvent) {
-        
-        if event.keyCode == 15 {
-            rKeyDown = true
-        }
-        
+        if event.keyCode == 15 { rKeyDown = true }
     }
         
     func keyUp(event: NSEvent) {
         if event.keyCode == 15 {
             rKeyDown = false
+            print("r key not down")
         }
-        
     }
     
 }
 
 extension GKSKNodeComponent {
-    
     func rotateBy(_ velocity: CGPoint, _ duration: TimeInterval) {
         let vector = CGVector(dx: velocity.x, dy: velocity.y)
         let action = SKAction.rotate(byAngle: vector.dx, duration: duration)
         node.run(action)
     }
-    
 }

@@ -1,7 +1,5 @@
 import SpriteKit
 import GameplayKit
 
-open class FinishComponent: GameComponent {
-                
-}
+open class FinishComponent: GameComponent { }
 
