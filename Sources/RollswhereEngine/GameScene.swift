@@ -7,11 +7,15 @@ open class GameScene: SKScene {
         if name == "gksceneinitoutoforder" {
             print("GKScene initializer is out of order")
             addEntitiesToChildren()
+            game?.addNodeEntitiesToScene()
         }
     }
-    
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init()
+        if name == "gksceneinitoutoforder" {
+            print("GKScene initializer is out of order")
+            addEntitiesToChildren()
+        }
     }
     func addEntitiesToChildren() {
         for node in children {

@@ -18,6 +18,18 @@ open class Game {
         stateMachine?.game = self
     }
     
+    public func addNodeEntitiesToScene() {
+        guard let scene = currentGameScene else {
+            return
+        }
+        for node in scene.children {
+            guard let entity = node.entity else {
+                continue
+            }
+            currentScene?.addEntity(entity)
+        }
+    }
+    
     public func each<Component: GKComponent>(_: Component.Type) -> [Component] {
         return currentScene?.each(Component.self) ?? []
     }
