@@ -11,7 +11,13 @@ open class StartComponent: GameComponent {
         return entity?.components.filter{ $0 is GKSKNodeComponent }.first as? GKSKNodeComponent
     }
         
-    var shootable: Shootable?
+    var shootable: ShootableComponent?
+    
+    public override init() {
+        super.init()
+    }
+
+    public required init?(coder: NSCoder) { super.init() }
     
 }
 

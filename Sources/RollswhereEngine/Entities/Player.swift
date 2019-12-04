@@ -16,12 +16,12 @@ public class Player: GKEntity {
         return componentsOfType.filter{ $0.player == self }
     }
      
-    var shootables: [Shootable] {
+    var shootables: [ShootableComponent] {
         guard let scene = game?.currentScene else { return [] }
-        var shootables: [Shootable] = []
+        var shootables: [ShootableComponent] = []
         for entity in scene.entities {
             for comp in entity.components {
-                if let comp = comp as? Shootable {
+                if let comp = comp as? ShootableComponent {
                     if comp.player == self {
                         shootables.append(comp)
                     }

@@ -1,7 +1,7 @@
 import GameplayKit
 import Smorgasbord
 
-open class Shootable: GameComponent {
+open class ShootableComponent: GameComponent {
             
     var power: CGFloat = 0
     var clickedLocation: CGPoint?

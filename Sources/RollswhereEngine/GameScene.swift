@@ -2,6 +2,46 @@ import SpriteKit
 import GameplayKit
 
 open class GameScene: SKScene {
+    override init() {
+        super.init()
+        if name == "gksceneinitoutoforder" {
+            print("GKScene initializer is out of order")
+            addEntitiesToChildren()
+        }
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    func addEntitiesToChildren() {
+        for node in children {
+            guard let nodeValues = node.userData?.allValues.compactMap({ $0 as? String }) else {
+                continue
+            }
+            var components: [GKComponent] = []
+            for nodeValue in nodeValues {
+                switch nodeValue {
+                case "physics": components.append(PhysicsComponent())
+                case "shootable": components.append(ShootableComponent())
+                case "draggable": components.append(DraggableComponent())
+                case "rotatable": components.append(RotateableComponent())
+                case "playercontrol": components.append(PlayerControlComponent())
+                default: break
+                }
+            }
+            if !components.isEmpty {
+                print("entity")
+                let entity = GKEntity()
+                entity.addComponent(GKSKNodeComponent(node: node))
+                for component in components {
+                    entity.addComponent(component)
+                }
+                node.entity = entity
+                print("components: \(entity.components)")
+                print()
+            }
+        }
+    }
     open override func didMove(to view: SKView) {
         physicsWorld.speed = 1
         anchorPoint = .init(x: 0.5, y: 0.5)

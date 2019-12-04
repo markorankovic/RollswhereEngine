@@ -31,7 +31,7 @@ open class Game {
     func addPlayers(to level: GKScene, players: [Player]) { for player in players { level.addEntity(player) } }
     
     func getPlayersFromShootables() -> [Player] {
-        let shootableNodes = each(Shootable.self).compactMap{ $0.nodeComponent?.node }
+        let shootableNodes = each(ShootableComponent.self).compactMap{ $0.nodeComponent?.node }
         var players: [Player] = []
         let arr = (shootableNodes.compactMap{ $0.userData?["shootable"] as? Int })
         let set = Set(arr)
@@ -53,15 +53,15 @@ open class Game {
     
     func assignStarts() { // Only works if start nodes are sorted left-right min-max
         let startComponents = each(StartComponent.self)
-        for shootable in each(Shootable.self) {
+        for shootable in each(ShootableComponent.self) {
             guard let shootableNodeData = shootable.nodeComponent?.node.userData else { continue }
             guard let index = shootableNodeData["start"] as? Int else { continue }
             startComponents[index].shootable = shootable
         }
     }
-    func assignDraggables() { associateComponentsWithPlayer(each(DragComponent.self)) }
-    func assignRotations() { associateComponentsWithPlayer(each(RotateComponent.self)) }
-    func assignShootables() { associateComponentsWithPlayer(each(Shootable.self)) }
+    func assignDraggables() { associateComponentsWithPlayer(each(DraggableComponent.self)) }
+    func assignRotations() { associateComponentsWithPlayer(each(RotateableComponent.self)) }
+    func assignShootables() { associateComponentsWithPlayer(each(ShootableComponent.self)) }
         
     func getPlayerFromComponentSKNodeData(_ component: GameComponent) -> Player? {
         guard let nodeData = component.nodeComponent?.node.userData else { return nil }
