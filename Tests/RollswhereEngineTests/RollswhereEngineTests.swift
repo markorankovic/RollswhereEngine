@@ -6,7 +6,7 @@ final class RollswhereEngineTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(RollswhereEngine().text, "Hello, World!")
+        //XCTAssertEqual(RollswhereEngine().text, "Hello, World!")
     }
 
     static var allTests = [

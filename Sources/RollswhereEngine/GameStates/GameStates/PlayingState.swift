@@ -16,10 +16,10 @@ class PlayingState: GameState {
             for shootable in player.shootables {
                 (shootable.stateMachine?.currentState as? GameState)?.panGestureHandler(gestureRecognizer)
             }
-            for dragComponent in player.each(ofType: DragComponent.self) {
+            for dragComponent in player.each(ofType: DraggableComponent.self) {
                 dragComponent.panGestureHandler(gestureRecognizer)
             }
-            for rotateComponent in player.each(ofType: RotateComponent.self) {
+            for rotateComponent in player.each(ofType: RotateableComponent.self) {
                 rotateComponent.panGestureHandler(gestureRecognizer)
             }
         }
@@ -31,7 +31,7 @@ class PlayingState: GameState {
             for shootable in player.shootables {
                 (shootable.stateMachine?.currentState as? GameState)?.keyDown(event: event)
             }
-            for rotateComponent in player.each(ofType: RotateComponent.self) {
+            for rotateComponent in player.each(ofType: RotateableComponent.self) {
                 rotateComponent.keyDown(event: event)
             }
         }
@@ -40,7 +40,7 @@ class PlayingState: GameState {
     override func keyUp(event: NSEvent) {
         guard let players = game?.players else { return }
         for player in players {
-            for rotateComponent in player.each(ofType: RotateComponent.self) {
+            for rotateComponent in player.each(ofType: RotateableComponent.self) {
                 rotateComponent.keyUp(event: event)
             }
         }
