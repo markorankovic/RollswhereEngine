@@ -15,6 +15,15 @@ open class GameScene: SKScene {
         if name == "gksceneinitoutoforder" {
             print("GKScene initializer is out of order")
             addEntitiesToChildren()
+            game?.addNodeEntitiesToScene()
+        }
+    }
+    public override init(size: CGSize) {
+        super.init()
+        if name == "gksceneinitoutoforder" {
+            print("GKScene initializer is out of order")
+            addEntitiesToChildren()
+            game?.addNodeEntitiesToScene()
         }
     }
     func addEntitiesToChildren() {
