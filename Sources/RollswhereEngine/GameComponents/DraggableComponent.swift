@@ -1,6 +1,6 @@
 import SpriteKit
 import GameplayKit
-import Smorgasbord
+//import Smorgasbord
 
 open class DraggableComponent: GameComponent {
             
@@ -37,7 +37,7 @@ open class DraggableComponent: GameComponent {
     
     func moveBy(_ gestureRecognizer: NSPanGestureRecognizer) {
         guard let scene = nodeComponent?.node.scene else { return }
-        let velocity = gestureRecognizer.velocity(in: scene.view) * 0.01
+        let velocity = gestureRecognizer.velocity(in: scene.view) * 0.05
         nodeComponent?.moveBy(velocity, 0.01)
     }
     

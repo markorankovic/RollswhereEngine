@@ -17,18 +17,20 @@ public class Player: GKEntity {
     }
      
     var shootables: [ShootableComponent] {
-        guard let scene = game?.currentScene else { return [] }
-        var shootables: [ShootableComponent] = []
-        for entity in scene.entities {
-            for comp in entity.components {
-                if let comp = comp as? ShootableComponent {
-                    if comp.player == self {
-                        shootables.append(comp)
+        get {
+            guard let scene = game?.currentScene else { return [] }
+            var shootables: [ShootableComponent] = []
+            for entity in scene.entities {
+                for comp in entity.components {
+                    if let comp = comp as? ShootableComponent {
+                        if comp.player == self {
+                            shootables.append(comp)
+                        }
                     }
                 }
             }
+            return shootables
         }
-        return shootables
     }
     
     var nodeComponent: GKSKNodeComponent? {

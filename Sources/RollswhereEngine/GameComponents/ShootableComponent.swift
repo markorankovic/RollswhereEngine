@@ -1,5 +1,5 @@
 import GameplayKit
-import Smorgasbord
+//import Smorgasbord
 
 open class ShootableComponent: GameComponent {
             
@@ -8,7 +8,7 @@ open class ShootableComponent: GameComponent {
     var stateMachine: GameStateMachine?
     
     func deactivateCollisionWithDynamics() {
-        //physicsComponent.setCategoryBitMask(0)
+        physicsComponent?.setCategoryBitMask(0)
     }
     
     var game: Game? {
@@ -33,14 +33,8 @@ open class ShootableComponent: GameComponent {
         ])
     }
     
-    required public init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
-        stateMachine = GameStateMachine(game: game, shootable: self, states: [
-            EnterLevelState(),
-            MovingState(),
-            ReadyState(),
-            RetryState()
-        ])
     }
     
     func activate(_ loc: CGPoint) { self.clickedLocation = loc }
@@ -124,12 +118,18 @@ open class ShootableComponent: GameComponent {
     }
  
     func returnToStart() {
+        print()
         guard let game = player?.game else { return }
         guard let scene = game.currentGameScene else { return }
+        print(game.each(StartComponent.self))
         guard let startComponent = (game.each(StartComponent.self).filter{ $0.shootable == self }.first) else { return }
-        guard let startNode = startComponent.nodeComponent?.node else { return }
+        print("Returning")
+        guard let startNode = startComponent.nodeComponent?.node.childNode(withName: "tex") else { return }
+        print("Returning to start")
         //guard let parentNode = startNode.parent else { return }
         let returnPos = scene.convert(.init(), from: startNode)
+        print(returnPos)
+        print()
         nodeComponent?.node.position = returnPos
     }
         

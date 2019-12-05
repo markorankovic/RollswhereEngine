@@ -24,7 +24,7 @@ class PlayingState: GameState {
             }
         }
     }
-        
+    
     override func keyDown(event: NSEvent) {
         guard let players = game?.players else { return }
         for player in players {
