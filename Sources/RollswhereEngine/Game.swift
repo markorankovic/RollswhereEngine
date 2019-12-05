@@ -13,7 +13,8 @@ open class Game {
         stateMachine = GameStateMachine(states: [
             EnterLevelState(),
             PlayingState(),
-            MainMenuState()
+            MainMenuState(),
+            TransitionState()
         ])
         stateMachine?.game = self
     }
@@ -86,7 +87,22 @@ open class Game {
         assignDraggables()
         assignRotations()
         assignShootables()
+        for shootable in each(ShootableComponent.self) {
+            shootable.stateMachine?.game = self
+        }
         stateMachine?.enter(EnterLevelState.self)
+    }
+    
+    var currentLevelIndex = 1
+    
+    let levels = 2
+    
+    func enterNextLevel() {
+        currentLevelIndex = (currentLevelIndex % levels) + 1
+        let level = GKScene()
+        let scene = GameScene(fileNamed: "Level\(currentLevelIndex)")!
+        level.rootNode = scene
+        runLevel(level)
     }
     
     func assignStarts() { // Only works if start nodes are sorted left-right min-max
@@ -97,13 +113,12 @@ open class Game {
             startComponents[index].shootable = shootable
         }
     }
-    
+        
     func assignDraggables() { associateComponentsWithPlayer(each(DraggableComponent.self)) }
     func assignRotations() { associateComponentsWithPlayer(each(RotateableComponent.self)) }
     func assignShootables() { associateComponentsWithPlayer(each(ShootableComponent.self)) }
-        
+    
     func getPlayerFromComponentSKNodeData(_ component: GameComponent) -> Player? {
-        //print(component.nodeComponent?.node.userData)
         guard let nodeData = component.nodeComponent?.node.userData else { return nil }
         print("\(component.className.lowercased().split(separator: ".")[1])")
         guard let i = nodeData["\(component.className.lowercased().split(separator: ".")[1])"] as? Int else {

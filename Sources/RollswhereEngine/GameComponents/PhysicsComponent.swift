@@ -20,7 +20,7 @@ open class PhysicsComponent: GameComponent {
         guard let physicsBody = physicsBody else { return false }
         return physicsBody.allContactedBodies().count == 0
     }
-                
+                    
     func stopMovement() {
         setVelocity(.init())
         setAngularVelocity(0)

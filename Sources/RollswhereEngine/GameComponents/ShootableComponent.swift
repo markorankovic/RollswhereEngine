@@ -112,7 +112,7 @@ open class ShootableComponent: GameComponent {
                     
     func enterReadyIfRested() {
         guard let physicsbody = physicsComponent?.physicsBody else { return }
-        print(physicsbody.velocity)
+        //print(physicsbody.velocity)
         if !physicsbody.isResting { return }
         stateMachine?.enter(ReadyState.self)
     }
@@ -121,15 +121,9 @@ open class ShootableComponent: GameComponent {
         print()
         guard let game = player?.game else { return }
         guard let scene = game.currentGameScene else { return }
-        print(game.each(StartComponent.self))
         guard let startComponent = (game.each(StartComponent.self).filter{ $0.shootable == self }.first) else { return }
-        print("Returning")
         guard let startNode = startComponent.nodeComponent?.node.childNode(withName: "tex") else { return }
-        print("Returning to start")
-        //guard let parentNode = startNode.parent else { return }
         let returnPos = scene.convert(.init(), from: startNode)
-        print(returnPos)
-        print()
         nodeComponent?.node.position = returnPos
     }
         
