@@ -11,7 +11,7 @@ extension SKView: Presenter { }
 
 public class GameView: SKView {
     
-    public var game: Game?
+    var game: VisualGame?
             
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -26,7 +26,7 @@ public class GameView: SKView {
         self.game?.currentGameScene?.panGestureHandler(gestureRecognizer)
     }
     
-    public func connectToGame(_ game: Game) {
+    func connectToGame(_ game: VisualGame) {
         self.game = game
         self.game?.view = self
     }

@@ -1,5 +1,5 @@
 import GameplayKit
-//import Smorgasbord
+import Smorgasbord
 
 open class ShootableComponent: GameComponent {
             
@@ -116,15 +116,5 @@ open class ShootableComponent: GameComponent {
         if !physicsbody.isResting { return }
         stateMachine?.enter(ReadyState.self)
     }
- 
-    func returnToStart() {
-        print()
-        guard let game = player?.game else { return }
-        guard let scene = game.currentGameScene else { return }
-        guard let startComponent = (game.each(StartComponent.self).filter{ $0.shootable == self }.first) else { return }
-        guard let startNode = startComponent.nodeComponent?.node.childNode(withName: "tex") else { return }
-        let returnPos = scene.convert(.init(), from: startNode)
-        nodeComponent?.node.position = returnPos
-    }
-        
+         
 }

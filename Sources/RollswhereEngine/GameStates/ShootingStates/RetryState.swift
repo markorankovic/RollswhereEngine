@@ -10,7 +10,10 @@ class RetryState: GameState {
                 print("Retrying attempt")
             }
         }
-        (stateMachine as? GameStateMachine)?.shootable?.returnToStart()
+        guard let shootable = (stateMachine as? GameStateMachine)?.shootable else {
+            return
+        }
+        game?.returnToStart(shootable: shootable)
     }
         
     override func update(deltaTime seconds: TimeInterval) {

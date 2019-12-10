@@ -1,4 +1,4 @@
-//import Smorgasbord
+import Smorgasbord
 import GameplayKit
 
 open class RotateableComponent: GameComponent {
