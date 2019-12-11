@@ -1,9 +1,10 @@
 import GameplayKit
-import Smorgasbord
+//import Smorgasbord
 
 open class ShootableComponent: GameComponent {
             
     var power: CGFloat = 0
+    let maxPower: CGFloat = 5000
     var clickedLocation: CGPoint?
     var stateMachine: GameStateMachine?
     
@@ -12,7 +13,7 @@ open class ShootableComponent: GameComponent {
     }
     
     var game: Game? {
-        return (nodeComponent?.node.scene as? GameScene)?.game
+        return stateMachine?.game
     }
             
     var physicsComponent: PhysicsComponent? {
@@ -21,6 +22,42 @@ open class ShootableComponent: GameComponent {
     
     override var nodeComponent: GKSKNodeComponent? {
         return entity?.components.filter{ $0 is GKSKNodeComponent }.first as? GKSKNodeComponent
+    }
+    
+    func updatePowerDisplay() {
+        guard let node = nodeComponent?.node else {
+            return
+        }
+        node.removeAllChildren()
+        guard let powerBar = createPowerBar(deltaAngle: power * (2 * .pi) / maxPower) else {
+            return
+        }
+        node.addChild(powerBar)
+    }
+    
+    func removePowerDisplay() {
+        nodeComponent?.node.removeAllChildren()
+    }
+    
+    private func createArc(radius: CGFloat, deltaAngle: CGFloat) -> CGMutablePath {
+        let arcPath = CGMutablePath()
+        arcPath.addRelativeArc(center: .init(), radius: radius, startAngle: .pi/2, delta: -(deltaAngle < 2 * .pi ? deltaAngle : 2 * .pi))
+        return arcPath
+    }
+
+    private func createPowerBar(deltaAngle: CGFloat) -> SKShapeNode? {
+        guard let node = nodeComponent?.node else {
+            return nil
+        }
+        let powerBar = SKShapeNode()
+        print(node.calculateAccumulatedFrame().width)
+        powerBar.path = createArc(
+            radius: node.calculateAccumulatedFrame().width / 4,
+            deltaAngle: deltaAngle
+        )
+        powerBar.strokeColor = .red
+        powerBar.lineWidth = 5
+        return powerBar
     }
     
     public override init() {
@@ -49,6 +86,10 @@ open class ShootableComponent: GameComponent {
         stateMachine?.enter(MovingState.self)
     }
     
+    func resetRotation() {
+        nodeComponent?.node.zRotation = 0
+    }
+    
     func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
         evaluate(gestureRecognizer)
     }
@@ -72,6 +113,7 @@ open class ShootableComponent: GameComponent {
             break
         case .ended:
             deactivate()
+            removePowerDisplay()
             if power > 50 {
                 shoot(stateMachine) 
                 return
@@ -81,9 +123,10 @@ open class ShootableComponent: GameComponent {
             if clickedLocation != nil {
                 let vectorDistance = loc - node.position
                 let distance = hypot(vectorDistance.x, vectorDistance.y)
-                let power = distance * 10
-                setPower(power)
+                let power = ((distance - 50) < 0 ? 0 : distance - 50) * 10
+                setPower(power > maxPower ? maxPower : power)
                 print(power)
+                updatePowerDisplay()
             }
         }
     }

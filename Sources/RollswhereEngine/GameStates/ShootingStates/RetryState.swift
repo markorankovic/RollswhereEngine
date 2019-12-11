@@ -13,6 +13,7 @@ class RetryState: GameState {
         guard let shootable = (stateMachine as? GameStateMachine)?.shootable else {
             return
         }
+        shootable.resetRotation()
         game?.returnToStart(shootable: shootable)
     }
         
