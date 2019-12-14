@@ -52,6 +52,8 @@ class SKSToVisualLevelConverter {
                 case "rotateable": components.append(RotateableComponent())
                 case "start": components.append(StartComponent())
                 case "finish": components.append(FinishComponent())
+                case "portals": components.append(PortalComponent())
+                case "speedboost": components.append(SpeedBoostComponent())
                 default: break
                 }
             }

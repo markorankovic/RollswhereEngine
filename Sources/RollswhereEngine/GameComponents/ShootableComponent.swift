@@ -4,7 +4,7 @@ import GameplayKit
 open class ShootableComponent: GameComponent {
             
     var power: CGFloat = 0
-    let maxPower: CGFloat = 5000
+    let maxPower: CGFloat = 10000
     var clickedLocation: CGPoint?
     var stateMachine: GameStateMachine?
     
@@ -56,7 +56,8 @@ open class ShootableComponent: GameComponent {
             deltaAngle: deltaAngle
         )
         powerBar.strokeColor = .red
-        powerBar.lineWidth = 5
+        powerBar.lineWidth = 10
+        powerBar.zPosition = 10
         return powerBar
     }
     

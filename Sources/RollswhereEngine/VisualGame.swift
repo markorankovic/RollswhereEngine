@@ -2,12 +2,13 @@ import GameplayKit
 import SpriteKit
 
 public class VisualGame: Game {
-        
+    
     public var stateMachine: GameStateMachine?
     public weak var view: Presenter?
     public var currentLevel: Level?
     public var currentScene: GKScene? { (currentLevel as? VisualLevel)?.gamescene }
     public var currentGameScene: GameScene? { currentScene?.rootNode as? GameScene }
+    public var gameRule: GameRule = .Campaign
     
     public var players: [Player] {
         guard let currentScene = currentScene else {
@@ -56,8 +57,9 @@ public class VisualGame: Game {
         guard let scene = currentGameScene else { return }
         view?.presentScene(scene)
         stateMachine?.enter(EnterLevelState.self)
+        print(players)
     }
-            
+    
     var currentLevelIndex = 1
     let levels = 2
     

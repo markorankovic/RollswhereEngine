@@ -19,4 +19,6 @@ public protocol Game {
     
     var currentLevel: Level? { get set }
     
+    var gameRule: GameRule { get set }
+    
 }
