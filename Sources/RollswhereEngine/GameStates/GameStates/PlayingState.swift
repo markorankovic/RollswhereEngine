@@ -17,7 +17,7 @@ class PlayingState: GameState {
                 (shootable.stateMachine?.currentState as? GameState)?.panGestureHandler(gestureRecognizer)
             }
             for dragComponent in player.each(ofType: DraggableComponent.self) {
-                dragComponent.panGestureHandler(gestureRecognizer)
+                dragComponent.panGestureHandler(gestureRecognizer, player)
             }
             for rotateComponent in player.each(ofType: RotateableComponent.self) {
                 rotateComponent.panGestureHandler(gestureRecognizer)

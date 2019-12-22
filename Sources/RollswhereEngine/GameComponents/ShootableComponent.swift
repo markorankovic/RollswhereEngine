@@ -7,11 +7,7 @@ open class ShootableComponent: GameComponent {
     let maxPower: CGFloat = 10000
     var clickedLocation: CGPoint?
     var stateMachine: GameStateMachine?
-    
-    func deactivateCollisionWithDynamics() {
-        physicsComponent?.setCategoryBitMask(0)
-    }
-    
+        
     var game: Game? {
         return stateMachine?.game
     }
@@ -22,6 +18,32 @@ open class ShootableComponent: GameComponent {
     
     override var nodeComponent: GKSKNodeComponent? {
         return entity?.components.filter{ $0 is GKSKNodeComponent }.first as? GKSKNodeComponent
+    }
+    
+    var active = false
+
+    func activatePhysics() {
+        physicsComponent?.physicsBody?.categoryBitMask = 0
+        physicsComponent?.physicsBody?.collisionBitMask = fixedBlock | moveableBlock
+        physicsComponent?.physicsBody?.contactTestBitMask = fixedBlock | moveableBlock | react
+        active = true
+        print("Physics activated")
+    }
+    
+    func deactivatePhysics() {
+        physicsComponent?.physicsBody?.categoryBitMask = 0
+        physicsComponent?.physicsBody?.collisionBitMask = fixedBlock
+        physicsComponent?.physicsBody?.contactTestBitMask = fixedBlock
+        active = false
+        print("Physics deactivated")
+    }
+    
+    func updateVisibility() {
+        if !active {
+            nodeComponent?.node.alpha = 0.5
+        } else {
+            nodeComponent?.node.alpha = 1
+        }
     }
     
     func updatePowerDisplay() {
@@ -69,6 +91,7 @@ open class ShootableComponent: GameComponent {
             ReadyState(),
             RetryState()
         ])
+        physicsComponent?.physicsBody?.linearDamping = 1
     }
     
     public required init?(coder: NSCoder) {
@@ -126,7 +149,6 @@ open class ShootableComponent: GameComponent {
                 let distance = hypot(vectorDistance.x, vectorDistance.y)
                 let power = ((distance - 50) < 0 ? 0 : distance - 50) * 10
                 setPower(power > maxPower ? maxPower : power)
-                print(power)
                 updatePowerDisplay()
             }
         }
@@ -153,12 +175,23 @@ open class ShootableComponent: GameComponent {
     }
     
     func keyDown(_ event: NSEvent) { returnIfSpecifiedKeyPressed(event: event) }
-                    
-    func enterReadyIfRested() {
+    
+    func evaluateRest() {
         guard let physicsbody = physicsComponent?.physicsBody else { return }
-        //print(physicsbody.velocity)
-        if !physicsbody.isResting { return }
-        stateMachine?.enter(ReadyState.self)
+        if physicsbody.resting && physicsbody.allContactedBodies().count > 0 {
+            self.stateMachine?.enter(ReadyState.self)
+        }
     }
-         
+    
+    func enterReadyIfRested() {
+        evaluateRest()
+    }
+    
+}
+
+extension SKPhysicsBody {
+    var resting: Bool {
+        let speed: CGFloat = 0.01
+        return abs(velocity.dx) < speed && abs(velocity.dy) < speed
+    }
 }

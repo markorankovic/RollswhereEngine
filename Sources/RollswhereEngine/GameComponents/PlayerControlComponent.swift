@@ -17,7 +17,7 @@ open class PlayerControlComponent: GameComponent {
     func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
         guard let player = player else { return }
         for draggable in player.each(ofType: DraggableComponent.self) {
-            draggable.panGestureHandler(gestureRecognizer)
+            draggable.panGestureHandler(gestureRecognizer, player)
         }
         for rotation in player.each(ofType: RotateableComponent.self) {
             rotation.panGestureHandler(gestureRecognizer)

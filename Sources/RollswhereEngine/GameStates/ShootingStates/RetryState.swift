@@ -1,7 +1,7 @@
 import GameplayKit
 
 class RetryState: GameState {
-    
+        
     override func didEnter(from previousState: GKState?) {
         if let previousState = previousState {
             if previousState is EnterLevelState {
@@ -13,12 +13,15 @@ class RetryState: GameState {
         guard let shootable = (stateMachine as? GameStateMachine)?.shootable else {
             return
         }
-        shootable.resetRotation()
         game?.returnToStart(shootable: shootable)
+        shootable.deactivatePhysics()
+        shootable.resetRotation()
     }
-        
+    
     override func update(deltaTime seconds: TimeInterval) {
-        (stateMachine as? GameStateMachine)?.shootable?.enterReadyIfRested()
+        DispatchQueue.main.async {
+            (self.stateMachine as? GameStateMachine)?.shootable?.enterReadyIfRested()
+        }
     }
 
 }

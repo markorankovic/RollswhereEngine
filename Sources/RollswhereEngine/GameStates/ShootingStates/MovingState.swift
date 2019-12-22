@@ -33,8 +33,6 @@ class MovingState: GameState {
                 return
             }
         }
-        DispatchQueue.main.async {
-            (self.stateMachine as? GameStateMachine)?.shootable?.enterReadyIfRested()
-        }
+        (self.stateMachine as? GameStateMachine)?.shootable?.enterReadyIfRested()
     }
 }

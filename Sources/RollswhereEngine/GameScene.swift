@@ -31,6 +31,10 @@ open class GameScene: SKScene {
     }
     
     override public func update(_ currentTime: TimeInterval) {
+        //print("Next frame")
+        for shootable in (game?.each(ShootableComponent.self) ?? []) {
+            shootable.updateVisibility()
+        }
         state?.update(deltaTime: currentTime)
     }
 }

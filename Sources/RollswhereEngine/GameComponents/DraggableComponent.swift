@@ -43,7 +43,7 @@ open class DraggableComponent: GameComponent {
     
     var rKeyDown = false
     
-    func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
+    func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer, _ player: Player) {
         switch gestureRecognizer.state {
         case .began:
             if beingDragged(gestureRecognizer) {
@@ -51,6 +51,9 @@ open class DraggableComponent: GameComponent {
             }
             return
         case .ended:
+            for shootable in player.shootables {
+                shootable.activatePhysics()
+            }
             deactivate()
             return
         default:
@@ -59,6 +62,9 @@ open class DraggableComponent: GameComponent {
                 rotating = rotateComponent.rotating
             }
             if active && !rotating {
+                for shootable in player.shootables {
+                    shootable.deactivatePhysics()
+                }
                 moveBy(gestureRecognizer)
             }
             return
