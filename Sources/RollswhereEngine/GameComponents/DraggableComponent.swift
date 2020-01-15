@@ -20,7 +20,7 @@ open class DraggableComponent: GameComponent {
         active = false
     }
         
-    var physicsComponent: PhysicsComponent? {
+    override var physicsComponent: PhysicsComponent? {
         return entity?.components.filter{ $0 is PhysicsComponent }.first as? PhysicsComponent
     }
     
@@ -37,8 +37,9 @@ open class DraggableComponent: GameComponent {
     
     func moveBy(_ gestureRecognizer: NSPanGestureRecognizer) {
         guard let scene = nodeComponent?.node.scene else { return }
-        let velocity = gestureRecognizer.velocity(in: scene.view) * 0.05
-        nodeComponent?.moveBy(velocity, 0.01)
+        //let velocity = gestureRecognizer.velocity(in: scene.view) * 0.05
+        let loc = gestureRecognizer.location(in: scene.view)
+        nodeComponent?.node.position = scene.convertPoint(fromView: loc)
     }
     
     var rKeyDown = false

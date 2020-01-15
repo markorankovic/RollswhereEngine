@@ -9,6 +9,9 @@ class MovingState: GameState {
         (self.stateMachine as? GameStateMachine)?.shootable?.keyDown(event)
     }
     override func update(deltaTime seconds: TimeInterval) {
+        guard let activatorComponents = game?.each(ActivatorComponent.self) else {
+            return
+        }
         guard let speedBoostComponents = game?.each(SpeedBoostComponent.self) else {
             return
         }
@@ -20,6 +23,15 @@ class MovingState: GameState {
         }
         guard let shootableComponent = (stateMachine as? GameStateMachine)?.shootable else {
             return
+        }
+        guard let scene = (game?.currentLevel?.gamescene.rootNode as? GameScene) else {
+            return
+        }
+        
+        scene.followShootable(shootable: shootableComponent)
+
+        for activatorComponent in activatorComponents {
+            activatorComponent.evaluate()
         }
         for speedBoostComponent in speedBoostComponents {
             speedBoostComponent.evaluate()

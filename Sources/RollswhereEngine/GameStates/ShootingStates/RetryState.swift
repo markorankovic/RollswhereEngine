@@ -16,6 +16,7 @@ class RetryState: GameState {
         game?.returnToStart(shootable: shootable)
         shootable.deactivatePhysics()
         shootable.resetRotation()
+        (game?.currentLevel?.gamescene.rootNode as? GameScene)?.returnCam()
     }
     
     override func update(deltaTime seconds: TimeInterval) {

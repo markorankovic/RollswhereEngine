@@ -3,6 +3,9 @@ import GameplayKit
 
 open class GameComponent: GKComponent {
     var player: Player?
+    var physicsComponent: PhysicsComponent? {
+        entity?.component(ofType: PhysicsComponent.self)
+    }
     var nodeComponent: GKSKNodeComponent? {
         entity?.component(ofType: GKSKNodeComponent.self)
     }

@@ -36,11 +36,16 @@ class SKSToVisualLevelConverter {
     }
     
     static private func addAndlinkNodesAndEntities(_ gamescene: GKScene) { // SKS
-        guard let children = (gamescene.rootNode as? GameScene)?.children else {
+        guard let rootNode = (gamescene.rootNode as? SKNode) else {
             return
         }
-        for node in children {
-            guard let nodeValues = node.userData?.allValues.compactMap({ $0 as? String }) else {
+        addAndlinkNodesAndEntities(rootNode, gamescene)
+    }
+    
+    static private func addAndlinkNodesAndEntities(_ node: SKNode, _ gamescene: GKScene) {
+        for n in node.children {
+            print(n)
+            guard let nodeValues = n.userData?.allValues.compactMap({ $0 as? String }) else {
                 continue
             }
             var components: [GKComponent] = []
@@ -54,6 +59,8 @@ class SKSToVisualLevelConverter {
                 case "finish": components.append(FinishComponent())
                 case "portals": components.append(PortalComponent())
                 case "speedboost": components.append(SpeedBoostComponent())
+                case "activator": components.append(ActivatorComponent())
+                case "grapplinghook": components.append(GrapplingHookComponent())
                 default: break
                 }
             }
@@ -62,9 +69,10 @@ class SKSToVisualLevelConverter {
                 for component in components {
                     entity.addComponent(component)
                 }
-                entity.addComponent(GKSKNodeComponent(node: node))
+                entity.addComponent(GKSKNodeComponent(node: n))
                 gamescene.addEntity(entity)
             }
+            addAndlinkNodesAndEntities(n, gamescene)
         }
     }
     

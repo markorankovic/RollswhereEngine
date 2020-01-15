@@ -9,7 +9,7 @@ open class RotateableComponent: GameComponent {
     func activate() {active = true}
     func deactivate() { active = false }
         
-    var physicsComponent: PhysicsComponent? {
+    override var physicsComponent: PhysicsComponent? {
         return entity?.components.filter{ $0 is PhysicsComponent }.first as? PhysicsComponent
     }
     

@@ -12,12 +12,16 @@ open class ShootableComponent: GameComponent {
         return stateMachine?.game
     }
             
-    var physicsComponent: PhysicsComponent? {
+    override var physicsComponent: PhysicsComponent? {
         return entity?.components.filter{ $0 is PhysicsComponent }.first as? PhysicsComponent
     }
     
     override var nodeComponent: GKSKNodeComponent? {
         return entity?.components.filter{ $0 is GKSKNodeComponent }.first as? GKSKNodeComponent
+    }
+    
+    var hookComponent: GrapplingHookComponent? {
+        return entity?.components.filter{ $0 is GrapplingHookComponent }.first as? GrapplingHookComponent
     }
     
     var active = false
@@ -50,7 +54,7 @@ open class ShootableComponent: GameComponent {
         guard let node = nodeComponent?.node else {
             return
         }
-        node.removeAllChildren()
+        node.childNode(withName: "powerbar")?.removeFromParent()
         guard let powerBar = createPowerBar(deltaAngle: power * (2 * .pi) / maxPower) else {
             return
         }
@@ -58,7 +62,7 @@ open class ShootableComponent: GameComponent {
     }
     
     func removePowerDisplay() {
-        nodeComponent?.node.removeAllChildren()
+        nodeComponent?.node.childNode(withName: "powerbar")?.removeFromParent()
     }
     
     private func createArc(radius: CGFloat, deltaAngle: CGFloat) -> CGMutablePath {
@@ -72,14 +76,14 @@ open class ShootableComponent: GameComponent {
             return nil
         }
         let powerBar = SKShapeNode()
-        print(node.calculateAccumulatedFrame().width)
         powerBar.path = createArc(
-            radius: node.calculateAccumulatedFrame().width / 4,
+            radius: node.calculateAccumulatedFrame().width / 2,
             deltaAngle: deltaAngle
         )
-        powerBar.strokeColor = .red
-        powerBar.lineWidth = 10
+        powerBar.strokeColor = .yellow
+        powerBar.lineWidth = 2
         powerBar.zPosition = 10
+        powerBar.name = "powerbar"
         return powerBar
     }
     
@@ -147,7 +151,7 @@ open class ShootableComponent: GameComponent {
             if clickedLocation != nil {
                 let vectorDistance = loc - node.position
                 let distance = hypot(vectorDistance.x, vectorDistance.y)
-                let power = ((distance - 50) < 0 ? 0 : distance - 50) * 10
+                let power = ((distance - 50) < 0 ? 0 : distance - 50) * 20
                 setPower(power > maxPower ? maxPower : power)
                 updatePowerDisplay()
             }
@@ -174,7 +178,14 @@ open class ShootableComponent: GameComponent {
         physicsComponent?.setAngularVelocity(0)
     }
     
-    func keyDown(_ event: NSEvent) { returnIfSpecifiedKeyPressed(event: event) }
+    func keyDown(_ event: NSEvent) {
+        returnIfSpecifiedKeyPressed(event: event)
+        print(event.keyCode)
+        if event.keyCode == 5 {
+            print(hookComponent)
+            hookComponent?.fire()
+        }
+    }
     
     func evaluateRest() {
         guard let physicsbody = physicsComponent?.physicsBody else { return }
@@ -195,3 +206,8 @@ extension SKPhysicsBody {
         return abs(velocity.dx) < speed && abs(velocity.dy) < speed
     }
 }
+
+
+
+
+

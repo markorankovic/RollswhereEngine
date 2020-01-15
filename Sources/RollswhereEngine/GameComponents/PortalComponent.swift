@@ -33,7 +33,6 @@ open class PortalComponent: ReactToHitComponent {
             return
         }
         for physics in getContactedPhysics() {
-            print(3)
             guard let collidingNode = physics.node else {
                 continue
             }

@@ -2,11 +2,26 @@ import SpriteKit
 import GameplayKit
 
 open class GameScene: SKScene {
-        
+    
     open override func didMove(to view: SKView) {
         physicsWorld.speed = 1
-        anchorPoint = .init(x: 0.5, y: 0.5)
-        scaleMode = .resizeFill
+        scaleMode = .aspectFill
+    }
+    
+    func followShootable(shootable: ShootableComponent) {
+        guard let p = shootable.nodeComponent?.node.position else {
+            return
+        }
+        guard let camera = camera else {
+            return
+        }
+        if (p.x > camera.position.x) {
+            camera.run(.move(to: p, duration: 0.3))
+        }
+    }
+    
+    func returnCam() {
+        camera?.run(.move(to: .init(), duration: 1))
     }
     
     public var game: Game? {
@@ -31,10 +46,10 @@ open class GameScene: SKScene {
     }
     
     override public func update(_ currentTime: TimeInterval) {
-        //print("Next frame")
         for shootable in (game?.each(ShootableComponent.self) ?? []) {
             shootable.updateVisibility()
         }
         state?.update(deltaTime: currentTime)
     }
+    
 }

@@ -13,8 +13,15 @@ class PlayingState: GameState {
     override func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {
         guard let players = game?.players else { return }
         for player in players {
+            var notReadyToMove = true
             for shootable in player.shootables {
+                if shootable.stateMachine!.currentState is MovingState {
+                    notReadyToMove = false
+                }
                 (shootable.stateMachine?.currentState as? GameState)?.panGestureHandler(gestureRecognizer)
+            }
+            guard notReadyToMove else {
+                continue
             }
             for dragComponent in player.each(ofType: DraggableComponent.self) {
                 dragComponent.panGestureHandler(gestureRecognizer, player)

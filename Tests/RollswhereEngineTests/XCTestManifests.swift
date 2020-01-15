@@ -1,9 +1,9 @@
-import XCTest
+//import XCTest
 
-#if !canImport(ObjectiveC)
-public func allTests() -> [XCTestCaseEntry] {
-    return [
-        testCase(RollswhereEngineTests.allTests),
-    ]
-}
-#endif
+//#if !canImport(ObjectiveC)
+//public func allTests() -> [XCTestCaseEntry] {
+//    return [
+//        testCase(RollswhereEngineTests.allTests),
+//    ]
+//}
+//#endif

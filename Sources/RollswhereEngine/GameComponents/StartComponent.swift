@@ -3,7 +3,7 @@ import GameplayKit
 
 open class StartComponent: GameComponent {
                
-    var physicsComponent: PhysicsComponent? {
+    override var physicsComponent: PhysicsComponent? {
         return entity?.components.filter{ $0 is PhysicsComponent }.first as? PhysicsComponent
     }
     
