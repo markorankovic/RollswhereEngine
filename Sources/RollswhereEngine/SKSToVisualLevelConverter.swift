@@ -60,7 +60,7 @@ class SKSToVisualLevelConverter {
                 case "portals": components.append(PortalComponent())
                 case "speedboost": components.append(SpeedBoostComponent())
                 case "activator": components.append(ActivatorComponent())
-                case "grapplinghook": components.append(GrapplingHookComponent())
+                case "grapplinghook": components.append(GrapplingHookComponent()); print(1)
                 default: break
                 }
             }

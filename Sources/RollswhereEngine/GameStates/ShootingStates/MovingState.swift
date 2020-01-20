@@ -45,6 +45,7 @@ class MovingState: GameState {
                 return
             }
         }
+        shootableComponent.update(deltaTime: seconds)
         (self.stateMachine as? GameStateMachine)?.shootable?.enterReadyIfRested()
     }
 }

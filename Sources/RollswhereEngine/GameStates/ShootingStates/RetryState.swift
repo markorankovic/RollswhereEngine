@@ -3,15 +3,16 @@ import GameplayKit
 class RetryState: GameState {
         
     override func didEnter(from previousState: GKState?) {
+        guard let shootable = (stateMachine as? GameStateMachine)?.shootable else {
+            return
+        }
         if let previousState = previousState {
             if previousState is EnterLevelState {
                 print("Getting ready to shoot")
+                shootable.removeGrapplingHook()
             } else {
                 print("Retrying attempt")
             }
-        }
-        guard let shootable = (stateMachine as? GameStateMachine)?.shootable else {
-            return
         }
         game?.returnToStart(shootable: shootable)
         shootable.deactivatePhysics()

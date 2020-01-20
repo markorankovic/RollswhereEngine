@@ -5,7 +5,7 @@ open class PhysicsComponent: GameComponent {
     public override init() {
         super.init()
     }
-
+    
     public required init?(coder: NSCoder) { super.init() }
     
     func setCategoryBitMask(_ bitMask: Int) {

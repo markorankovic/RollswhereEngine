@@ -21,7 +21,11 @@ open class ShootableComponent: GameComponent {
     }
     
     var hookComponent: GrapplingHookComponent? {
-        return entity?.components.filter{ $0 is GrapplingHookComponent }.first as? GrapplingHookComponent
+        let hookFromChild = nodeComponent?.node.childNode(withName: "hook")?.entity?.components.filter{ $0 is GrapplingHookComponent }.first as? GrapplingHookComponent
+        
+        let hookFromScene = nodeComponent?.node.scene?.childNode(withName: "hook")?.entity?.components.filter{ $0 is GrapplingHookComponent }.first as? GrapplingHookComponent
+        
+        return hookFromChild ?? hookFromScene
     }
     
     var active = false
@@ -182,11 +186,29 @@ open class ShootableComponent: GameComponent {
         returnIfSpecifiedKeyPressed(event: event)
         print(event.keyCode)
         if event.keyCode == 5 {
-            print(hookComponent)
-            hookComponent?.fire()
+            guard let fired = hookComponent?.fired else {
+                return
+            }
+            if !fired {
+                hookComponent?.fire()
+            } else {
+                removeGrapplingHook()
+                hookComponent?.fired = false
+            }
         }
     }
     
+    open override func update(deltaTime seconds: TimeInterval) {
+        hookComponent?.originalParentNode = nodeComponent?.node
+        hookComponent?.update(deltaTime: seconds)
+    }
+    
+    func removeGrapplingHook() {
+        hookComponent?.rope.removeFromParent()
+        hookComponent?.nodeComponent?.node.removeFromParent()
+        print("Grappling Hook removed")
+    }
+        
     func evaluateRest() {
         guard let physicsbody = physicsComponent?.physicsBody else { return }
         if physicsbody.resting && physicsbody.allContactedBodies().count > 0 {
