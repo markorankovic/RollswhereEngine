@@ -5,7 +5,7 @@ public class VisualGame: Game {
     
     public func enterNextLevel() {
         //currentLevelIndex = (currentLevelIndex % levels) + 1
-        currentLevelIndex = 3
+        currentLevelIndex = 4
         runLevel(SKSToVisualLevelConverter.sksToVisualLevel(
             filenamed: "Level\(currentLevelIndex)", game: self)
         )
