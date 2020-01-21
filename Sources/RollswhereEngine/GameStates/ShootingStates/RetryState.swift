@@ -9,10 +9,10 @@ class RetryState: GameState {
         if let previousState = previousState {
             if previousState is EnterLevelState {
                 print("Getting ready to shoot")
-                shootable.removeGrapplingHook()
             } else {
                 print("Retrying attempt")
             }
+            shootable.removeGrapplingHook()
         }
         game?.returnToStart(shootable: shootable)
         shootable.deactivatePhysics()

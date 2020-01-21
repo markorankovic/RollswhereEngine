@@ -25,6 +25,8 @@ class PlayingState: GameState {
             }
             for dragComponent in player.each(ofType: DraggableComponent.self) {
                 dragComponent.panGestureHandler(gestureRecognizer, player)
+                dragComponent.physicsComponent?.physicsBody?.categoryBitMask = moveableBlock
+                dragComponent.actFixedForHoldingShootables(player.shootables)
             }
             for rotateComponent in player.each(ofType: RotateableComponent.self) {
                 rotateComponent.panGestureHandler(gestureRecognizer)

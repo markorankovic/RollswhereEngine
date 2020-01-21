@@ -44,6 +44,20 @@ open class DraggableComponent: GameComponent {
     
     var rKeyDown = false
     
+    func actFixedForHoldingShootables(_ shootables: [ShootableComponent]) {
+        guard let draggableBody = physicsComponent?.physicsBody else {
+            return
+        }
+        for shootable in shootables {
+            guard let shootableBody = shootable.physicsComponent?.physicsBody else {
+                return
+            }
+            if draggableBody.allContactedBodies().contains(shootableBody) {
+                draggableBody.categoryBitMask = fixedBlock
+            }
+        }
+    }
+    
     func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer, _ player: Player) {
         switch gestureRecognizer.state {
         case .began:
