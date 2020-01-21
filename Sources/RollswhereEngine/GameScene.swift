@@ -3,21 +3,43 @@ import GameplayKit
 
 open class GameScene: SKScene {
     
+    var minX: CGFloat {
+        -size.width / 4
+    }
+    
+    var maxX: CGFloat {
+        size.width - size.width / 4
+    }
+    
+    var minY: CGFloat {
+        -size.height / 2
+    }
+    
+    var maxY: CGFloat {
+        size.height / 2
+    }
+    
     open override func didMove(to view: SKView) {
         physicsWorld.speed = 1
         scaleMode = .aspectFill
+        camera?.constraints = [
+            SKConstraint.positionX(.init(lowerLimit: minX + size.width / 4, upperLimit: maxX - size.width / 4)),
+            SKConstraint.positionY(.init(lowerLimit: 0, upperLimit: 0))
+        ]
     }
     
     func followShootable(shootable: ShootableComponent) {
         guard let p = shootable.nodeComponent?.node.position else {
             return
         }
+        moveTowardPosition(p)
+    }
+    
+    func moveTowardPosition(_ p: CGPoint) {
         guard let camera = camera else {
             return
         }
-        if (p.x > camera.position.x) {
-            camera.run(.move(to: p, duration: 0.3))
-        }
+        camera.run(.move(to: p, duration: 0.3))
     }
     
     func returnCam() {
