@@ -20,20 +20,14 @@ open class ShootableComponent: GameComponent {
         return entity?.components.filter{ $0 is GKSKNodeComponent }.first as? GKSKNodeComponent
     }
     
-    var hookComponent: GrapplingHookComponent? {
-        let hookFromChild = nodeComponent?.node.childNode(withName: "hook")?.entity?.components.filter{ $0 is GrapplingHookComponent }.first as? GrapplingHookComponent
-        
-        let hookFromScene = nodeComponent?.node.scene?.childNode(withName: "hook")?.entity?.components.filter{ $0 is GrapplingHookComponent }.first as? GrapplingHookComponent
-        
-        return hookFromChild ?? hookFromScene
-    }
+    var hookComponent: GrapplingHookComponent?
     
     var active = false
 
     func activatePhysics() {
         physicsComponent?.physicsBody?.categoryBitMask = 0
         physicsComponent?.physicsBody?.collisionBitMask = fixedBlock | moveableBlock
-        physicsComponent?.physicsBody?.contactTestBitMask = fixedBlock | moveableBlock | react
+        physicsComponent?.physicsBody?.contactTestBitMask = fixedBlock | moveableBlock | react | grappinghook
         active = true
         print("Physics activated")
     }
@@ -197,12 +191,7 @@ open class ShootableComponent: GameComponent {
             }
         }
     }
-    
-    open override func update(deltaTime seconds: TimeInterval) {
-        hookComponent?.originalParentNode = nodeComponent?.node
-        hookComponent?.update(deltaTime: seconds)
-    }
-    
+        
     func removeGrapplingHook() {
         hookComponent?.rope.removeFromParent()
         hookComponent?.nodeComponent?.node.removeFromParent()

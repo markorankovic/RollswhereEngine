@@ -2,43 +2,81 @@ import SpriteKit
 
 open class GrapplingHookComponent: GameComponent {
     
-    var originalParentNode: SKNode?
+    var shootableNode: SKNode?
     
     var fired = false
         
     let rope = SKShapeNode()
+    
+    var attached: Bool {
+        return shootableNode != nil
+    }
     
     func fire() {
         guard let node = nodeComponent?.node else {
             return
         }
         print("Hook fired")
-        separateFromNode()
+        nodeComponent?.node.constraints = []
         addPhysics()
         fired = true
         let speed: CGFloat = 5000
         physicsComponent?.setVelocity(CGVector(dx: CGFloat(speed * cos(node.zRotation)), dy: CGFloat(speed * sin(node.zRotation))))
         node.scene?.addChild(rope)
     }
-                
+    
+    func mouseMoved(with event: NSEvent) {
+        guard let node = nodeComponent?.node else {
+            return
+        }
+        if attached {
+            node.run(.rotate(byAngle: (event.deltaX > 0 ? 0.1 : -0.1), duration: 0.1))
+        }
+    }
+    
+    func attachTo(_ shootableComponent: ShootableComponent) {
+        shootableNode = shootableComponent.nodeComponent?.node
+        shootableComponent.hookComponent = self
+        if let shootableNode = shootableNode {
+            nodeComponent?.node.constraints = [
+                SKConstraint.distance(.init(constantValue: 0), to: shootableNode)
+            ]
+            nodeComponent?.node.physicsBody = nil
+            print("Hook attached")
+        }
+    }
+    
+    func contactsShootable(shootable: ShootableComponent) -> Bool {
+        guard let physicsBody = nodeComponent?.node.physicsBody else {
+            return false
+        }
+        guard let shootableBody = shootable.physicsComponent?.physicsBody else {
+            return false
+        }
+        if shootableBody.allContactedBodies().contains(physicsBody) {
+            return true
+        }
+        return false
+    }
+    
     func initializeRope() {
         guard let node = nodeComponent?.node else {
             return
         }
-        guard let originalParentNode = originalParentNode else {
+        guard let shootableNode = shootableNode else {
             return
         }
-        guard let scene = originalParentNode.scene else {
+        guard let scene = shootableNode.scene else {
             return
         }
         let physicsWorld = scene.physicsWorld
         let joint = SKPhysicsJointLimit.joint(
-            withBodyA: originalParentNode.physicsBody!,
+            withBodyA: shootableNode.physicsBody!,
             bodyB: node.physicsBody!,
-            anchorA: originalParentNode.position,
+            anchorA: shootableNode.position,
             anchorB: node.position
         )
-        joint.maxLength = node.position.distanceFrom(originalParentNode.position)
+        joint.maxLength = node.position.distanceFrom(shootableNode.position)
         physicsWorld.add(joint)
     }
     
@@ -46,7 +84,7 @@ open class GrapplingHookComponent: GameComponent {
         guard let node = nodeComponent?.node else {
             return
         }
-        guard let originalParentNode = originalParentNode else {
+        guard let originalParentNode = shootableNode else {
             return
         }
         node.physicsBody = nil
@@ -55,24 +93,7 @@ open class GrapplingHookComponent: GameComponent {
         node.position = .init()
         node.zRotation = 0
     }
-    
-    func separateFromNode() {
-        guard let node = nodeComponent?.node else {
-            return
-        }
-        guard let parentNode = nodeComponent?.node.parent else {
-            return
-        }
-        guard let scene = node.scene else {
-            return
-        }
-        let p = scene.convert(node.position, from: parentNode)
-        node.removeFromParent()
-        scene.addChild(node)
-        node.position = p
-        node.zRotation = parentNode.zRotation
-    }
-    
+        
     func addPhysics() {
         guard let node = nodeComponent?.node else {
             return
@@ -90,7 +111,7 @@ open class GrapplingHookComponent: GameComponent {
         guard let node = nodeComponent?.node else {
             return
         }
-        guard let originalParentNode = originalParentNode else {
+        guard let originalParentNode = shootableNode else {
             return
         }
         let ropePath: CGMutablePath = CGMutablePath()

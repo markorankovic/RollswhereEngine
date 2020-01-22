@@ -9,6 +9,9 @@ class MovingState: GameState {
         (self.stateMachine as? GameStateMachine)?.shootable?.keyDown(event)
     }
     override func update(deltaTime seconds: TimeInterval) {
+        guard let hookComponents = game?.each(GrapplingHookComponent.self) else {
+            return
+        }
         guard let activatorComponents = game?.each(ActivatorComponent.self) else {
             return
         }
@@ -30,6 +33,11 @@ class MovingState: GameState {
         
         scene.followShootable(shootable: shootableComponent)
 
+        for hookComponent in hookComponents {
+            if hookComponent.contactsShootable(shootable: shootableComponent) {
+                hookComponent.attachTo(shootableComponent)
+            }
+        }
         for activatorComponent in activatorComponents {
             activatorComponent.evaluate()
         }
@@ -47,5 +55,13 @@ class MovingState: GameState {
         }
         shootableComponent.update(deltaTime: seconds)
         (self.stateMachine as? GameStateMachine)?.shootable?.enterReadyIfRested()
+    }
+    override func mouseMoved(event: NSEvent) {
+        guard let hookComponents = game?.each(GrapplingHookComponent.self) else {
+            return
+        }
+        for hookComponent in hookComponents {
+            hookComponent.mouseMoved(with: event)
+        }
     }
 }

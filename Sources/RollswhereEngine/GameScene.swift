@@ -8,7 +8,7 @@ open class GameScene: SKScene {
     }
     
     var maxX: CGFloat {
-        size.width - size.width / 4
+        size.width + size.width / 2
     }
     
     var minY: CGFloat {
@@ -23,11 +23,11 @@ open class GameScene: SKScene {
         physicsWorld.speed = 1
         scaleMode = .aspectFill
         camera?.constraints = [
-            SKConstraint.positionX(.init(lowerLimit: minX + size.width / 4, upperLimit: maxX - size.width / 4)),
+            SKConstraint.positionX(.init(lowerLimit: minX + size.width / 4, upperLimit: maxX - size.width / 2)),
             SKConstraint.positionY(.init(lowerLimit: 0, upperLimit: 0))
         ]
     }
-    
+        
     func followShootable(shootable: ShootableComponent) {
         guard let p = shootable.nodeComponent?.node.position else {
             return
@@ -57,6 +57,10 @@ open class GameScene: SKScene {
     var state: GameState? { return game?.stateMachine?.currentState as? GameState }
     
     override public func keyDown(with event: NSEvent) { state?.keyDown(event: event) }
+    
+    open override func mouseMoved(with event: NSEvent) {
+        state?.mouseMoved(event: event)
+    }
     
     override public func keyUp(with event: NSEvent) {
         state?.keyUp(event: event)

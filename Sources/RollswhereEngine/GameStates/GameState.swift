@@ -5,4 +5,5 @@ class GameState: GKState {
     func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) { }
     func keyDown(event: NSEvent) { }
     func keyUp(event: NSEvent) { }
+    func mouseMoved(event: NSEvent) { }
 }

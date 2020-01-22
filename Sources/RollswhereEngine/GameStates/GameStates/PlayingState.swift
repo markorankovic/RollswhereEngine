@@ -34,6 +34,15 @@ class PlayingState: GameState {
         }
     }
     
+    override func mouseMoved(event: NSEvent) {
+        guard let players = game?.players else { return }
+        for player in players {
+            for shootable in player.shootables {
+                (shootable.stateMachine?.currentState as? GameState)?.mouseMoved(event: event)
+            }
+        }
+    }
+    
     override func keyDown(event: NSEvent) {
         guard let players = game?.players else { return }
         for player in players {
