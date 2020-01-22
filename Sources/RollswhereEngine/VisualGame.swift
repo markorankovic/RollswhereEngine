@@ -4,7 +4,7 @@ import SpriteKit
 public class VisualGame: Game {
     
     public func enterNextLevel() {
-        //currentLevelIndex = (currentLevelIndex % levels) + 1
+        currentLevelIndex = (currentLevelIndex % levels) + 1
         currentLevelIndex = 4
         runLevel(SKSToVisualLevelConverter.sksToVisualLevel(
             filenamed: "Level\(currentLevelIndex)", game: self)
@@ -68,7 +68,7 @@ public class VisualGame: Game {
         print(players)
     }
     
-    var currentLevelIndex = 1
-    let levels = 25
+    var currentLevelIndex = 4
+    let levels = 2
         
 }

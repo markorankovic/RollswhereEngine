@@ -29,8 +29,13 @@ open class GrapplingHookComponent: GameComponent {
         guard let node = nodeComponent?.node else {
             return
         }
+        guard let scene = node.scene else {
+            return
+        }
         if attached {
-            node.run(.rotate(byAngle: (event.deltaX > 0 ? 0.1 : -0.1), duration: 0.1))
+            let p = event.location(in: scene)
+            let theta = node.position.angleTo(p)
+            node.zRotation = theta
         }
     }
     
@@ -103,8 +108,8 @@ open class GrapplingHookComponent: GameComponent {
         physicsBody.collisionBitMask = 0
         physicsBody.contactTestBitMask = 2
         node.physicsBody = physicsBody
-        let physicsComponent = PhysicsComponent()
-        entity?.addComponent(physicsComponent)
+        //let physicsComponent = PhysicsComponent()
+        //entity?.addComponent(physicsComponent)
     }
     
     func drawRope() {

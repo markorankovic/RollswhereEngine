@@ -37,6 +37,7 @@ class MovingState: GameState {
             if hookComponent.contactsShootable(shootable: shootableComponent) {
                 hookComponent.attachTo(shootableComponent)
             }
+            hookComponent.update(deltaTime: seconds)
         }
         for activatorComponent in activatorComponents {
             activatorComponent.evaluate()
