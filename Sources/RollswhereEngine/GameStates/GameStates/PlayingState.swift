@@ -69,6 +69,9 @@ class PlayingState: GameState {
         for player in players {
             for shootable in player.shootables {
                 shootable.stateMachine?.update(deltaTime: seconds)
+                if shootable.nodeComponent?.exitedscene ?? false {
+                    shootable.stateMachine?.enter(MovingState.self)
+                }
             }
         }
     }

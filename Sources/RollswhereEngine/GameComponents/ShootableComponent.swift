@@ -1,6 +1,15 @@
 import GameplayKit
 //import Smorgasbord
 
+extension GKSKNodeComponent {
+    public var exitedscene: Bool {
+        guard let scene = node.scene else {
+            return false
+        }
+        return scene.frame.minY > node.position.y
+    }
+}
+
 open class ShootableComponent: GameComponent {
             
     var power: CGFloat = 0
