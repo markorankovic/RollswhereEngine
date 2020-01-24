@@ -7,6 +7,7 @@ class SKSToVisualLevelConverter {
     static public func sksToVisualLevel(filenamed: String, game: Game) -> VisualLevel {
         let gamescene = GKScene()
         let scene = GameScene(fileNamed: filenamed)!
+        scene.scaleMode = .aspectFill
         gamescene.rootNode = scene
         addAndlinkNodesAndEntities(gamescene) // GKScene init not working, hence user data of SKNodes
         let players = getPlayersFromShootables(gamescene: gamescene, game: game)
@@ -40,11 +41,11 @@ class SKSToVisualLevelConverter {
             return
         }
         addAndlinkNodesAndEntities(rootNode, gamescene)
+        return
     }
     
     static private func addAndlinkNodesAndEntities(_ node: SKNode, _ gamescene: GKScene) {
         for n in node.children {
-            print(n)
             guard let nodeValues = n.userData?.allValues.compactMap({ $0 as? String }) else {
                 continue
             }
@@ -60,12 +61,13 @@ class SKSToVisualLevelConverter {
                 case "portals": components.append(PortalComponent())
                 case "speedboost": components.append(SpeedBoostComponent())
                 case "activator": components.append(ActivatorComponent())
-                case "grapplinghook": components.append(GrapplingHookComponent()); print(1)
+                case "grapplinghook": components.append(GrapplingHookComponent());
                 default: break
                 }
             }
             if !components.isEmpty {
                 let entity = GKEntity()
+                print(entity)
                 for component in components {
                     entity.addComponent(component)
                 }
@@ -74,6 +76,7 @@ class SKSToVisualLevelConverter {
             }
             addAndlinkNodesAndEntities(n, gamescene)
         }
+        return
     }
     
     static private func assignStarts(_ gamescene: GKScene) { // Only works if start nodes are sorted left-right min-max

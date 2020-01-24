@@ -4,10 +4,9 @@ import SpriteKit
 public class VisualGame: Game {
     
     public func enterNextLevel() {
-        currentLevelIndex = (currentLevelIndex % levels) + 1
-        runLevel(SKSToVisualLevelConverter.sksToVisualLevel(
-            filenamed: "Level\(currentLevelIndex)", game: self)
-        )
+        currentLevelIndex += 1
+        let nextLevel = SKSToVisualLevelConverter.sksToVisualLevel(filenamed: "Level\(currentLevelIndex)", game: self)
+        runLevel(nextLevel)
     }
     
     public var stateMachine: GameStateMachine?
@@ -38,7 +37,7 @@ public class VisualGame: Game {
         currentLevelIndex = 0
         enterNextLevel()
     }
-    
+        
     public func returnToStart(shootable: ShootableComponent) {
         guard let scene = currentGameScene else { return }
         guard let startComponent = (each(StartComponent.self).filter{ $0.shootable == shootable }.first) else {
@@ -58,16 +57,17 @@ public class VisualGame: Game {
     public func each<Component: GKComponent>(_: Component.Type) -> [Component] {
         return currentScene?.each(Component.self) ?? []
     }
-    
+        
     public func runLevel(_ level: Level) {
-        currentLevel = level
-        guard let scene = currentGameScene else { return }
-        view?.presentScene(scene)
-        stateMachine?.enter(EnterLevelState.self)
-        print(players)
+        self.currentLevel = level
+        guard let scene = self.currentGameScene else { return }
+        self.view?.presentScene(scene)
+        print(currentGameScene!.view!.frame.size)
+        self.stateMachine?.enter(EnterLevelState.self)
     }
     
-    var currentLevelIndex = 0
+    var currentLevelIndex = 2
     let levels = 1
         
 }
+

@@ -21,13 +21,12 @@ open class GameScene: SKScene {
     
     open override func didMove(to view: SKView) {
         physicsWorld.speed = 1
-        scaleMode = .aspectFill
         camera?.constraints = [
             SKConstraint.positionX(.init(lowerLimit: minX + size.width / 4, upperLimit: maxX - size.width / 2)),
             SKConstraint.positionY(.init(lowerLimit: 0, upperLimit: 0))
         ]
     }
-        
+    
     func followShootable(shootable: ShootableComponent) {
         guard let p = shootable.nodeComponent?.node.position else {
             return

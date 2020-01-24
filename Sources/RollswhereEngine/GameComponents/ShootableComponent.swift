@@ -1,15 +1,6 @@
 import GameplayKit
 //import Smorgasbord
 
-extension GKSKNodeComponent {
-    public var exitedscene: Bool {
-        guard let scene = node.scene else {
-            return false
-        }
-        return scene.frame.minY > node.position.y
-    }
-}
-
 open class ShootableComponent: GameComponent {
             
     var power: CGFloat = 0
@@ -27,6 +18,16 @@ open class ShootableComponent: GameComponent {
     
     override var nodeComponent: GKSKNodeComponent? {
         return entity?.components.filter{ $0 is GKSKNodeComponent }.first as? GKSKNodeComponent
+    }
+    
+    var exitedscene: Bool {
+        guard let node = nodeComponent?.node else {
+            return false
+        }
+        guard let scene = node.scene else {
+            return false
+        }
+        return scene.frame.minY > node.position.y
     }
     
     var hookComponent: GrapplingHookComponent?
@@ -93,7 +94,7 @@ open class ShootableComponent: GameComponent {
         powerBar.name = "powerbar"
         return powerBar
     }
-    
+        
     public override init() {
         super.init()
         stateMachine = GameStateMachine(game: game, shootable: self, states: [
@@ -226,8 +227,3 @@ extension SKPhysicsBody {
         return abs(velocity.dx) < speed && abs(velocity.dy) < speed
     }
 }
-
-
-
-
-
