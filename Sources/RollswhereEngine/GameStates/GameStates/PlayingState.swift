@@ -68,10 +68,10 @@ class PlayingState: GameState {
         guard let players = game?.players else { return }
         for player in players {
             for shootable in player.shootables {
-                shootable.stateMachine?.update(deltaTime: seconds)
                 if shootable.exitedscene {
                     shootable.stateMachine?.enter(MovingState.self)
                 }
+                shootable.stateMachine?.update(deltaTime: seconds)
             }
         }
     }
