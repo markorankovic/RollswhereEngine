@@ -37,9 +37,9 @@ open class DraggableComponent: GameComponent {
     
     func moveBy(_ gestureRecognizer: NSPanGestureRecognizer) {
         guard let scene = nodeComponent?.node.scene else { return }
-        //let velocity = gestureRecognizer.velocity(in: scene.view) * 0.05
-        let loc = gestureRecognizer.location(in: scene.view)
-        nodeComponent?.node.position = scene.convertPoint(fromView: loc)
+        guard let node = nodeComponent?.node else { return }
+        let loc = scene.convertPoint(fromView: gestureRecognizer.location(in: scene.view))
+        node.position = loc
     }
     
     var rKeyDown = false
