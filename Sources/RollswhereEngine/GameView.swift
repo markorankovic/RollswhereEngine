@@ -21,7 +21,7 @@ public class GameView: SKView {
         let pan = NSPanGestureRecognizer(target: self, action: #selector(panGestureHandler))
         addGestureRecognizer(pan)
         window?.acceptsMouseMovedEvents = true
-        showsPhysics = true
+        //showsPhysics = true
     }
     
     @IBAction func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer) {

@@ -8,6 +8,7 @@ class SKSToVisualLevelConverter {
         let gamescene = GKScene()
         let scene = GameScene(fileNamed: filenamed)!
         scene.scaleMode = .aspectFill
+        setBackgroundTexture(scene)
         gamescene.rootNode = scene
         addAndlinkNodesAndEntities(gamescene) // GKScene init not working, hence user data of SKNodes
         let players = getPlayersFromShootables(gamescene: gamescene, game: game)
@@ -21,6 +22,12 @@ class SKSToVisualLevelConverter {
         }
         let level = VisualLevel(gamescene: gamescene)
         return level
+    }
+    
+    static private func setBackgroundTexture(_ scene: GameScene) {
+        guard let backgroundNode = scene.childNode(withName: "background") as? SKSpriteNode else { return }
+        guard let texname = backgroundNode.userData?["tex"] as? String else { return }
+        backgroundNode.texture = SKTexture(imageNamed: texname)
     }
     
     static private func addPlayers(to level: GKScene, players: [Player]) { for player in players { level.addEntity(player) } }

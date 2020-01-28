@@ -21,10 +21,16 @@ open class GameScene: SKScene {
     
     open override func didMove(to view: SKView) {
         physicsWorld.speed = 1
-        camera?.constraints = [
-            SKConstraint.positionX(.init(lowerLimit: minX + size.width / 4, upperLimit: maxX - size.width / 2)),
-            SKConstraint.positionY(.init(lowerLimit: 0, upperLimit: 0))
-        ]
+        if let backgroundNode = childNode(withName: "background") {
+            let backgroundMinX = -backgroundNode.frame.size.width/2
+            let backgroundMaxX = backgroundNode.frame.size.width/2
+            let backgroundMinY = -backgroundNode.frame.size.height/2
+            let backgroundMaxY = backgroundNode.frame.size.height/2
+            camera?.constraints = [
+                SKConstraint.positionX(.init(lowerLimit: backgroundMinX + size.width/2, upperLimit: backgroundMaxX - size.width/2)),
+                SKConstraint.positionY(.init(lowerLimit: backgroundMinY + size.height/2, upperLimit: backgroundMaxY - size.height/2)),
+            ]
+        }
     }
     
     func followShootable(shootable: ShootableComponent) {
@@ -41,8 +47,11 @@ open class GameScene: SKScene {
         camera.run(.move(to: p, duration: 0.3))
     }
     
-    func returnCam() {
-        camera?.run(.move(to: .init(), duration: 1))
+    func returnCam(shootable: ShootableComponent) {
+        guard let pos = shootable.nodeComponent?.node.position else {
+            return
+        }
+        camera?.run(.move(to: pos, duration: 1))
     }
     
     public var game: Game? {
