@@ -200,7 +200,6 @@ open class ShootableComponent: GameComponent {
                 hookComponent?.fired = false
             }
         } else if event.keyCode == 49 {
-            print("Slowing!")
             physicsComponent?.physicsBody?.angularDamping += 0.1
         }
     }

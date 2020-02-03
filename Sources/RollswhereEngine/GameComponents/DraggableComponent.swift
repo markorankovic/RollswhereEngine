@@ -35,11 +35,16 @@ open class DraggableComponent: GameComponent {
         return scene.nodes(at: scene.convertPoint(fromView: location)).contains(node)
     }
     
+    var initialLoc: CGPoint?
+    var initialNodePos: CGPoint?
+    
     func moveBy(_ gestureRecognizer: NSPanGestureRecognizer) {
         guard let scene = nodeComponent?.node.scene else { return }
         guard let node = nodeComponent?.node else { return }
+        guard let initialLoc = initialLoc else { return }
+        guard let initialNodePos = initialNodePos else { return }
         let loc = scene.convertPoint(fromView: gestureRecognizer.location(in: scene.view))
-        node.position = loc
+        node.position = loc + initialNodePos - initialLoc
     }
     
     var rKeyDown = false
@@ -61,6 +66,10 @@ open class DraggableComponent: GameComponent {
     func panGestureHandler(_ gestureRecognizer: NSPanGestureRecognizer, _ player: Player) {
         switch gestureRecognizer.state {
         case .began:
+            guard let node = nodeComponent?.node else { return }
+            guard let scene = node.scene else { return }
+            initialLoc = scene.convertPoint(fromView: gestureRecognizer.location(in: scene.view))
+            initialNodePos = node.position
             if beingDragged(gestureRecognizer) {
                 activate()
             }
