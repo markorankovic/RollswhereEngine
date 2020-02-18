@@ -168,7 +168,9 @@ open class ShootableComponent: GameComponent {
     
     func clickedOn(clickLocation loc: CGPoint, scene: GameScene) -> Bool {
         guard let visualnode = nodeComponent?.node else { return false }
-        return scene.nodes(at: loc).contains(visualnode)
+        var nodes = scene.nodes(at: loc)
+        nodes.sort{ $0.zPosition > $1.zPosition }
+        return nodes.first == visualnode
     }
     
     func returnIfSpecifiedKeyPressed(event: NSEvent) {

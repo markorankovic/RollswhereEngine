@@ -20,7 +20,7 @@ public class GameView: SKView {
     public override func viewDidMoveToWindow() {
         let pan = NSPanGestureRecognizer(target: self, action: #selector(panGestureHandler))
         addGestureRecognizer(pan)
-        window?.acceptsMouseMovedEvents = true
+        window?.acceptsMouseMovedEvents = true // Aiming with the grappling hook
         //showsPhysics = true
     }
     
